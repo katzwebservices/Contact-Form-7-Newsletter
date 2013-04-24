@@ -60,10 +60,10 @@ In the WordPress administration, navigate to Contact > Constant Contact in the W
 ## Screenshots ##
 
 ###1. Constant Contact Module Configuration###
-![Constant Contact Module Configuration](http://s.wordpress.org/extend/plugins/contact-form-7-newsletter/screenshot-1.png)
+![Constant Contact Module Configuration](http://s.wordpress.org/extend/plugins/contact-form-7-newsletter/screenshot-1.jpg)
 
 ###2. On the Form Configuration Page###
-![On the Form Configuration Page](http://s.wordpress.org/extend/plugins/contact-form-7-newsletter/screenshot-2.png)
+![On the Form Configuration Page](http://s.wordpress.org/extend/plugins/contact-form-7-newsletter/screenshot-2.jpg)
 
 
 ## Changelog ##
