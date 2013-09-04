@@ -3,7 +3,7 @@ Contributors: katzwebservices, katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Constant%20Form%207%20Constant%20Contact%20Module
 Tags: Constant Contact, Contact Form 7, ContactForm7, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
 Requires at least: 3.2
-Tested up to: 3.5
+Tested up to: 3.6
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -11,9 +11,13 @@ Easily integrate email marketing with the Contact Form 7 plugin. When users cont
 
 == Description ==
 
-> __This plugin requires a <a href="http://wordpress.constantcontact.com" title="Sign up for a free Constant Contact trial" rel="nofollow">Constant Contact account</a>.__ <br />*Don't have an account?* Constant Contact offers a <a href="https://wordpress.constantcontact.com/email-marketing/signup.jsp" rel="nofollow">free 60 day trial</a>, so sign up and give this plugin a whirl!
+> ### <a href="http://downloads.wordpress.org/plugin/contact-form-7-newsletter.2.0.zip">Try the version 2.0 beta!</a>
+>
+> Version 2.0 adds some great new features. Try it out now and help test it!
 
 Automatically add contact form submissions to Constant Contact lists that you choose.
+
+> __This plugin requires a <a href="http://wordpress.constantcontact.com" title="Sign up for a free Constant Contact trial" rel="nofollow">Constant Contact account</a>.__ <br />*Don't have an account?* Constant Contact offers a <a href="https://wordpress.constantcontact.com/email-marketing/signup.jsp" rel="nofollow">free 60 day trial</a>, so sign up and give this plugin a whirl!
 
 ### Get linked with Constant Contact in 60 seconds!
 This plugin is very easy to get set up. The instructions are simple: 
