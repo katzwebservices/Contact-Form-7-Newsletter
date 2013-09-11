@@ -500,7 +500,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 						echo '
 						<li>
 							<label for="wpcf7-ctct-list-'.$list['id'].'">
-								<input type="checkbox" class="option" name="\''.$list['name'].'::#'.$list['id'].'\'" id="wpcf7-ctct-list-'.$list['id'].'" value="'.$list['link'].'" '.@checked((is_array($list) && in_array($list['link'], (array)$cf7_ctct['lists'])), true, false).' />
+								<input type="checkbox" class="option" name="\''.str_replace("'", '&amp;#39;', $list['name']).'::#'.$list['id'].'\'" id="wpcf7-ctct-list-'.$list['id'].'" value="'.$list['link'].'" '.@checked((is_array($list) && in_array($list['link'], (array)$cf7_ctct['lists'])), true, false).' />
 							'.$list['name'].'
 							</label>
 						</li>';
