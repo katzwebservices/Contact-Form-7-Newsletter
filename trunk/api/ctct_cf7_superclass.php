@@ -6,14 +6,14 @@ class CTCT_SuperClass extends CTCTUtility {
 		self::updateSettings($this);
 	}
 
-	public function updateSettings($object = false) {
+	static public function updateSettings($object = false) {
 		if(is_a($object,'CTCTUtility')) {
 			$settings = get_option("ctct_cf7");
-			$object->login = trim($settings['username']);
-	        $object->password = trim($settings['password']);
-			$object->apiPath = str_replace('USERNAME', '', (string)$object->apiPath).trim($settings['username']);
-			$object->actionBy = 'ACTION_BY_CONTACT';
-			$object->requestLogin = $object->apikey.'%'.$object->login.':'.$object->password;
+			$object->setLogin(trim($settings['username']));
+	        $object->setPassword(trim($settings['password']));
+			$object->setApiPath(str_replace('USERNAME', '', (string)$object->getApiPath()).trim($settings['username']));
+			$object->setActionBy('ACTION_BY_CONTACT');
+			$object->setRequestLogin($object->getApiKey().'%'.$object->getLogin().':'.$object->getPassword());
 		}
 	}
 
@@ -36,7 +36,7 @@ class CTCT_SuperClass extends CTCTUtility {
 	}
 
 	public function CC_Utility() {
-		$CC_Utility = new CTCTUtility();
+		$CC_Utility = new CTCT_SuperClass();
 		self::updateSettings($CC_Utility);
 		return $CC_Utility;
 	}
@@ -47,13 +47,13 @@ class CTCT_SuperClass extends CTCTUtility {
 		return $CC_Contact;
 	}
 
-	public function CC_ListsCollection() {
+	static public function CC_ListsCollection() {
 		$CC_ListsCollection = new CTCTListsCollection();
 		self::updateSettings($CC_ListsCollection);
 		return $CC_ListsCollection;
 	}
 
-	public function getAvailableLists() {
+	static public function getAvailableLists() {
 		$lists = self::getAllLists();
 		foreach ($lists as $key => $list) {
 			if(!is_numeric($list['id'])) {
@@ -67,9 +67,9 @@ class CTCT_SuperClass extends CTCTUtility {
 		return $id;
 	}
 
-	private function getLists($page = null, $outputLists = array()) {
+	static private function getLists($page = null, $outputLists = array()) {
 
-		$Lists = self::CC_ListsCollection()->getLists($page);
+		$Lists = CTCT_SuperClass::CC_ListsCollection()->getLists($page);
 
 		if(!$Lists || empty($Lists)) { return array(); }
 
@@ -95,9 +95,9 @@ class CTCT_SuperClass extends CTCTUtility {
 		return $outputLists;
 	}
 
-	public function getAllLists() {
+	static public function getAllLists() {
 
-		$ctct_cf7_alllists = get_site_transient('ctct_cf7_alllists');
+		$ctct_cf7_alllists = get_transient('ctct_cf7_alllists');
 
 		if($ctct_cf7_alllists && is_array($ctct_cf7_alllists) && !is_wp_error($ctct_cf7_alllists) && (!isset($_GET['cache']) && !isset($_GET['refresh']))) {
 			return $ctct_cf7_alllists;
@@ -107,7 +107,7 @@ class CTCT_SuperClass extends CTCTUtility {
 		$outputLists = self::getLists();
 
 		if(!empty($outputLists)) {
-			set_site_transient('ctct_cf7_alllists', $outputLists, 60*60*24);
+			set_transient('ctct_cf7_alllists', $outputLists, 60*60*96);
 		}
 
 		return $outputLists;
