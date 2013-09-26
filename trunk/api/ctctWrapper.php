@@ -1172,7 +1172,8 @@
 			$lname_node = $contact_node->addChild("MiddleName", urldecode(htmlspecialchars(($contact->getMiddleName()), ENT_QUOTES, 'UTF-8')));
 			$lname_node = $contact_node->addChild("CompanyName", urldecode(htmlspecialchars(($contact->getCompanyName()), ENT_QUOTES, 'UTF-8')));
 			$lname_node = $contact_node->addChild("JobTitle", urldecode(htmlspecialchars(($contact->getJobTitle()), ENT_QUOTES, 'UTF-8')));
-			$optin_node = $contact_node->addChild("OptInSource", htmlspecialchars($utility->getActionBy()));
+			#$optin_node = $contact_node->addChild("OptInSource", htmlspecialchars($utility->getActionBy()));
+			$optin_node = $contact_node->addChild("OptInSource", htmlspecialchars($contact->getOptInSource()));  // ZK mod
 			$hn_node = $contact_node->addChild("HomePhone", htmlspecialchars($contact->getHomeNumber(), ENT_QUOTES, 'UTF-8'));
 			$wn_node = $contact_node->addChild("WorkPhone", htmlspecialchars($contact->getWorkNumber(), ENT_QUOTES, 'UTF-8'));
 			$ad1_node = $contact_node->addChild("Addr1", htmlspecialchars($contact->getAddr1(), ENT_QUOTES, 'UTF-8'));
@@ -1272,7 +1273,7 @@
 			$this->setCustomField14(@$params['custom_field_14']);
 			$this->setCustomField15(@$params['custom_field_15']);
 			$this->setEmailType(@$params['mail_type']);
-			$this->setOptInSource($utility->getActionBy());
+			$this->setOptInSource((isset($params['opt_in_source']) ? $params['opt_in_source'] : $utility->getActionBy())); // ZK mod
 
 			if (@$params['lists'])
 			{
@@ -2693,7 +2694,7 @@
 	 * getters and setters for variables
 	 *
 	 */
-	class Registrant
+	class CTCTRegistrant
 	{
 		/**
 		* Construct function for the Registrant Class
@@ -3047,7 +3048,7 @@
 				$registrantArray['reg_date'] = ($item->content->Registrant->RegistrationDate);
 				$registrantArray['guest_count'] = ($item->content->Registrant->GuestCount);
 				$registrantArray['payment_status'] = ($item->content->Registrant->PaymentStatus);
-				$registrant = new Registrant($registrantArray);
+				$registrant = new CTCTRegistrant($registrantArray);
 				$registrantList[] = $registrant;
 			}
 
@@ -3251,7 +3252,7 @@
 
 				}
 			}
-			$registrantStruct = new Registrant($registrantArray);
+			$registrantStruct = new CTCTRegistrant($registrantArray);
 			return $registrantStruct;
 		}
 	}
