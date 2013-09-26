@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: Contact Form 7 - Constant Contact Module
+Plugin Name: Contact Form 7 Newsletter
 Plugin URI: http://www.katzwebservices.com
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.0.3
+Version: 2.0.4
 */
 
 /*  Copyright 2013 Katz Web Services, Inc. (email: info@katzwebservices.com)
@@ -36,7 +36,7 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.0.2';
+	private static $version = '2.0.4';
 
 	function __construct() {
 
@@ -78,6 +78,7 @@ class CTCTCF7 {
 
 		$previous_version = get_option('ctct_cf7_version');
 		$version = self::get_version();
+		$updated = false;
 
 		// Pre-Version 2.0
 		if(!$previous_version) { $previous = true; $previous_version = '1.1'; }
@@ -86,7 +87,6 @@ class CTCTCF7 {
 		if($previous_version !== $version) {
 			$updated = true;
 		}
-
 
 		if($updated) { // @todo
 			add_option('ctct_cf7_updated', $previous_version);
@@ -119,18 +119,39 @@ class CTCTCF7 {
 	 */
 	static function updated_message() {
 		if($previous_version = get_option( 'ctct_cf7_updated' )) {
-			echo '<div class="wrap" style="max-width:800px;"><div class="updated inline">';
-			echo wpautop(sprintf(__('<h2>You need to update your existing Contact Form 7 Newsletter form configurations.</h2>
 
-				The Contact Form 7 Newsletter plugin has made significant changes. <strong>You should make sure that the integrations are still configured properly</strong>.
+			// If this upgrade is from V1 to V2
+			$version1update = version_compare( $previous_version, '2.0', '<');
+			if($version1update) {
+				echo '<style>.wrap .updated #message { display: none; }</style>';
+				echo '<div class="wrap" style="max-width:800px;"><div class="updated inline">';
+				echo wpautop(sprintf(__('<h2>You need to update your existing Contact Form 7 Newsletter form configurations.</h2>
 
-				The forms with the <img src="%s" width="16" height="16" alt="" /> icon next to their name are the forms with Constant Contact integration enabled.
+					<h3><a href="%s" target="_blank">Read detailed form integration instructions</a>.</h3>
 
-				<a class="button-primary button" href="%s">Go to Contact Form 7</a><a class="button-secondary button alignright" id="hide-cf7-update" href="%s">Got it, hide this message.</a>
-				'), plugins_url('favicon.png',__FILE__), admin_url( 'admin.php?page=wpcf7' ), add_query_arg(array('hide-cf7-update' => true) )));
+					The Contact Form 7 Newsletter plugin has made significant changes. While your existing configurations should still work, <strong>you should make sure that the integrations are still configured properly</strong>.
 
-			echo '</div></div>';
-			?>
+					The forms with the <img src="%s" width="16" height="16" alt="" /> icon next to their name are the forms with Constant Contact integration enabled.
+
+					<a class="button-primary button" href="%s">Go to Contact Form 7</a><a class="button-secondary button alignright" id="hide-cf7-update" href="%s">Got it, hide this 	message.</a>
+					'),
+					plugins_url( 'help/howto.html#step_10', __FILE__ ),
+					plugins_url('favicon.png',__FILE__),
+					admin_url( 'admin.php?page=wpcf7' ),
+					add_query_arg(array('hide-cf7-update' => true) ))
+				);
+
+				echo '</div></div>';
+			}
+
+			// Placeholder for future messages.
+			switch ($previous_version) {
+				case '2.0.3':
+				case '2.0.2':
+					break;
+			}
+
+?>
 			<script>
 				jQuery(document).ready(function($) {
 					$('.cf7com-links').hide();
@@ -156,7 +177,7 @@ class CTCTCF7 {
 	}
 
 	/**
-	 * Add an icon to forms with Constant Contact integration enabled.
+	 * Add an icon to forms with Constant Contact integration enabled on the Contact Form 7 Edit page.
 	 *
 	 */
 	static function add_enabled_icon() {
@@ -178,11 +199,13 @@ class CTCTCF7 {
 
 			foreach($forms as &$form) {
 				$is_active = get_option( 'cf7_ctct_'.$form->id);
-				if(!empty($is_active)) {
+
+				if(!empty($is_active) && !empty($is_active['active'])) {
 					$activeforms[] = $form->id;
 				}
 			}
 
+			// Reset the post data, possibly modified by `WPCF7_ContactForm::find()`.
 			wp_reset_postdata();
 
 			// If there are no forms with CTCT integration, get outta here
@@ -201,13 +224,15 @@ class CTCTCF7 {
 			</style>
 			<script>
 				jQuery(document).ready(function($) {
+					// Convert forms array into JSON array
 					$activeforms = $.parseJSON('<?php echo json_encode($activeforms); ?>');
 
+					// For each visible forms row
 					$('table.posts tr').each(function() {
 						// Get the ID of the row
 						id = parseInt($('.check-column input', $(this)).val());
 
-						// If the row is in the $activeforms array, add the icon
+						// If the row is in the $activeforms array, add the icon span
 						if($activeforms.indexOf(id) >= 0) {
 							$('td a.row-title', $(this)).append('<span class="ctct_enabled" title="Constant Contact integration is enabled for this form."></span>');
 						}
@@ -393,11 +418,15 @@ class CTCTCF7 {
 	}
 
 	static function settings_page() {
-
+		wp_enqueue_style( 'thickbox' );
+		@include_once(plugin_dir_path(__FILE__).'kwsratingbox.php');
 ?>
 	<div class="wrap">
+		<?php kws_show_rating_box('Contact Form 7 - Constant Contact Module', 'contact-form-7-newsletter', self::get_version()); ?>
+
 		<a href="http://katz.si/4w"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact" style="margin-top:1em;" /></a>
 		<h2 style="padding-top:0;margin-bottom:.5em;"><?php _e('Contact Form 7 Module', 'ctctcf7'); ?></h2>
+
 		<form action="options.php" method="post">
 			<?php
 				$valid = self::validateApi();
@@ -407,7 +436,7 @@ class CTCTCF7 {
 				switch($status) {
 					case 1: $message = false; break;
 					case 2: $message = __('Contact Form 7 is installed but inactive. Activate Contact Form 7 to use this plugin.', 'ctctcf7'); break;
-					case 0: $message = __(sprintf('Contact Form 7 is not installed. <a href="%s" class="thickbox" title="Install Contact Form 7">Install the Contact Form 7 plugin</a> to use this plugin.', admin_url('plugin-install.php?tab=plugin-information&amp;plugin=contact-form-7&amp;TB_iframe=true&amp;width=600&amp;height=550')), 'ctctcf7'); break;
+					case 0: $message = __(sprintf('Contact Form 7 is not installed. <a href="%s" class="thickbox" title="Install Contact Form 7">Install the Contact Form 7 plugin</a> to use this plugin.', admin_url('plugin-install.php?tab=plugin-information&amp;plugin=contact-form-7&amp;TB_iframe=true&amp;width=600&amp;height=650')), 'ctctcf7'); break;
 				}
 
 				if(!empty($message)) {
@@ -417,18 +446,18 @@ class CTCTCF7 {
 				if(is_null(self::get_password()) && is_null(self::get_username())) {
 					self::show_signup_message();
 				} elseif($valid) {
-					echo wpautop(sprintf(__('<h3>%sNow you can integrate with a Contact Form 7 form. %sChoose a form to edit%s, then check the checkbox as shown in the image.</h3>', 'ctctcf7'), '<img src="'.plugins_url('settings_screenshot.png', __FILE__).'" width="317" height="147" class="alignleft" alt="How the \'Integrate Form With Constant Contact\' checkbox looks." style="margin:0 1em;" />', '<a href="'.admin_url( 'admin.php?page=wpcf7' ).'">', '</a>'));
-					echo '<hr class="divider" />';
-					echo "<div id='message' class='updated inline'><p>".__('Your username and password seem to be working.', 'ctctcf7')."</p></div>";
+					echo wpautop(sprintf(__('<h3>Now you can integrate with a Contact Form 7 form. %sView integration instructions%s.</h3>', 'ctctcf7'), '<a href="'.plugins_url( 'help/howto.html', __FILE__ ).'" target="_blank">', '</a>'));
+
+					echo "<div id='message' class='updated inline alignleft'><p>".__('Your username and password seem to be working.', 'ctctcf7')."</p></div>";
 
 					do_action( 'presstrends_event_ctctcf7', 'Valid API Configuration');
 
 				} elseif(is_null(self::get_password())) {
-					echo "<div id='message' class='error'><p>".__('Your password is empty.', 'ctctcf7')."</p></div>";
+					echo "<div id='message' class='error alignleft'><p>".__('Your password is empty.', 'ctctcf7')."</p></div>";
 				} elseif(is_null(self::get_username())) {
-					echo "<div id='message' class='error'><p>".__('Your username is empty.', 'ctctcf7')."</p></div>";
+					echo "<div id='message' class='error alignleft'><p>".__('Your username is empty.', 'ctctcf7')."</p></div>";
 				} else {
-					echo "<div id='message' class='error'><p>".__('Your username and password are not configured properly.', 'ctctcf7')."</p></div>";
+					echo "<div id='message' class='error alignleft'><p>".__('Your username and password are not configured properly.', 'ctctcf7')."</p></div>";
 
 					do_action( 'presstrends_event_ctctcf7', 'Invalid API Configuration');
 
@@ -556,6 +585,7 @@ class CTCTCF7 {
 
 	<h2 class="clear" id="enter-account-details"><?php _e('Enter your account details below:', 'ctctcf7'); ?></h2>
 	<?php
+		echo wpautop(sprintf(__('<h3>%sView integration instructions%s.</h3>', 'ctctcf7'), '<a href="'.plugins_url( 'help/howto.html', __FILE__ ).'" target="_blank">', '</a>'));
 	}
 
 	static function save_form_settings($args) {
@@ -599,7 +629,7 @@ class CTCTCF7 {
 			if(!in_array($list['link'], (array)$cf7_ctct['lists'])) { continue; }
 			echo '<li>'.$list['name'].'</li>';
 		}
-		?></ul>"><?php _e('Where are my lists?', 'ctctcf7'); ?></div>
+		?></ul><p><strong>For full instructions, go to the Contact > Constant Contact page and click 'View integration instructions'.</strong></p>"><?php _e('Where are my lists?', 'ctctcf7'); ?></div>
 
 	<a href="http://katz.si/4w"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact Logo" style="margin-top:.5em;" /></a>
 
@@ -638,14 +668,6 @@ class CTCTCF7 {
 			echo $instructions;
 		?>
 
-		<div class="mail-field" style="width:50%;">
-			<label for="wpcf7-ctct-accept"><?php echo esc_html( __( 'Opt-In Field', 'ctctcf7' ) ); ?>
-				<span class="howto"><?php _e('<strong>If you generated a "Constant Contact Lists" field above, this setting is not necessary, and will be ignored.</strong>', 'ctctcf7'); ?></span>
-				<input type="text" id="wpcf7-ctct-accept" name="wpcf7-ctct[accept]" placeholder="Example: [checkbox-456]" class="wide" size="70" value="<?php echo esc_attr( isset($cf7_ctct['accept']) ? $cf7_ctct['accept'] : '' ); ?>" />
-				<span class="howto"><?php _e('If the user should check a box to be added to the lists, enter the checkbox field here. Leave blank to have no opt-in field.', 'ctctcf7'); ?></span>
-			</label>
-		</div>
-
 		<?php
 			$i = 0;
 			foreach($CTCT_SuperClass->listMergeVars() as $var) {
@@ -661,6 +683,14 @@ class CTCTCF7 {
 			if($i % 2 === 1) { echo '<div class="clear"></div>'; }
 			$i++;
 		 } ?>
+
+		<div class="clear mail-field" style="width:50%;">
+			<label for="wpcf7-ctct-accept"><?php echo esc_html( __( 'Opt-In Field', 'ctctcf7' ) ); ?>
+				<span class="howto"><?php _e('<strong>If you generated a "Constant Contact Lists" field above, this setting is not necessary, and will be ignored.</strong>', 'ctctcf7'); ?></span>
+				<input type="text" id="wpcf7-ctct-accept" name="wpcf7-ctct[accept]" placeholder="Example: [checkbox-456]" class="wide" size="70" value="<?php echo esc_attr( isset($cf7_ctct['accept']) ? $cf7_ctct['accept'] : '' ); ?>" />
+				<span class="howto"><?php _e('If the user should check a box to be added to the lists, enter the checkbox field here. Leave blank to have no opt-in field.', 'ctctcf7'); ?></span>
+			</label>
+		</div>
 
 	</div>
 	<div class="clear"></div>

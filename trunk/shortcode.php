@@ -342,8 +342,6 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 						$('#wpcf7-ctct-email_address').focus().parents('.half-left,.half-right').addClass('error');
 						return false;
 					}
-				} else {
-					alert('not checked');
 				}
 			});
 
