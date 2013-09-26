@@ -1,0 +1,343 @@
+/* BEGIN CSS Reset */
+
+
+
+body h1 {
+  font-weight: normal;
+  font-family: Georgia, serif;
+  color: #2a6180;
+  font-size: 2.65em;
+  line-height: 1;
+  border-bottom: 1px solid #cfcfcf;
+  padding-bottom: 0.25em;
+  margin-bottom: 0.7em; }
+  body h1 body h1 img {
+    margin: 0; }
+
+body h2 {
+  font-weight: normal;
+  font-family: Georgia, serif;
+  color: #2a6180;
+  font-size: 1.7em;
+  margin-bottom: 0.5em; }
+
+body h3 {
+  font-weight: normal;
+  font-family: Georgia, serif;
+  color: #2a6180;
+  font-size: 1.3em;
+  line-height: 1;
+  margin-bottom: 1em; }
+
+body p {
+  margin: 1.5em 0; }
+  body p body p img.left {
+    display: inline;
+    float: left;
+    margin: 1.5em 1.5em 1.5em 0;
+    padding: 0; }
+  body p body p img.right {
+    display: inline;
+    float: right;
+    margin: 1.5em 0 1.5em 1.5em;
+    padding: 0; }
+
+body a {
+  text-decoration: underline;
+  color: #2a6180; }
+  body a body a:visited {
+    color: #2a6180; }
+  body a body a:focus {
+    color: black; }
+  body a body a:hover {
+    color: black; }
+  body a body a:active {
+    color: #407ea1; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  vertical-align: baseline; }
+
+div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,
+pre, a, abbr, acronym, address, code, del, dfn, em, img,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, caption, tbody, tfoot, thead, tr {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline; }
+
+blockquote, q {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  quotes: "" ""; }
+  blockquote blockquote:before, blockquote q:before, q blockquote:before, q q:before,
+  blockquote blockquote:after, blockquote q:after, q blockquote:after, q q:after {
+    content: ""; }
+
+th, td, caption {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle; }
+
+table {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  border-collapse: separate;
+  border-spacing: 0;
+  vertical-align: middle; }
+
+a img {
+  border: none; }
+
+p {
+  margin: 0 0 1.5em; }
+
+a {
+  text-decoration: underline;
+  color: #000099; }
+  a a:visited {
+    color: #000066; }
+  a a:focus {
+    color: black; }
+  a a:hover {
+    color: black; }
+  a a:active {
+    color: #cc0099; }
+
+blockquote {
+  margin: 1.5em;
+  color: #666;
+  font-style: italic; }
+
+strong {
+  font-weight: bold; }
+
+em {
+  font-style: italic; }
+
+pre, code, tt {
+  font: 1em 'andale mono', 'lucida console', monospace;
+  line-height: 1.5; }
+
+li ul, li ol {
+  margin: 0 1.5em; }
+
+ul {
+  margin: 0 1.5em 1.5em 1.5em;
+  list-style-type: disc; }
+
+ol {
+  margin: 0 1.5em 1.5em 1.5em;
+  list-style-type: decimal; }
+
+table {
+  margin-bottom: 1.4em;
+  width: 100%; }
+
+th {
+  font-weight: bold; }
+
+thead th {
+  background: #c3d9ff; }
+
+th, td, caption {
+  padding: 4px 10px 4px 5px;}
+
+tr.even td {
+  background: #e5ecf9; }
+
+.clearfix {
+  overflow: hidden;
+  display: inline-block; }
+  .clearfix .clearfix {
+    display: block; }
+
+/* END CSS Reset */
+
+/* BEGIN ScreenSteps Template Default */
+
+body {
+  line-height: 1.5;
+  font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  color: #111;
+  font-size: 87.5%;
+  background: #5d7481; margin: 0; padding: 40px 10px; }
+  
+body.lucida {
+  font-family: "Lucida Grande", Lucida, Verdana, sans-serif; }
+
+body.helvetica {
+  font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif; }
+
+body.courier {
+  font-family: "Courier New", Courier, mono; }
+
+body.georgia {
+  font-family: Georgia, "Times New Roman", Times, serif; }
+
+body.trebuchet {
+  font-family: "Trebuchet MS","Helvetica Neue", Arial, Helvetica, Geneva, sans-serif; }
+  
+body.lucida h2, body.helvetica h2, body.trebuchet h2 {
+  font-family: Georgia, "Times New Roman", Times, serif; }
+
+body.georgia h2 {
+  font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif; }
+
+
+div#wrapper {
+  background: #fff; 
+  padding: 40px; 
+  width: 815px; 
+  -moz-box-shadow: 3px #596f7c; 
+  -webkit-box-shadow: 3px #596f7c; 
+  box-shadow: 3px #596f7c; 
+  margin: 0 auto;}
+div#LessonContent div.lessonStep  {margin-top: 2.5em; clear:left;}
+
+div#LessonContent div.lessonStep div.image {
+  background: #f4f4f4; 
+  padding: 25px 10px; 
+  border: 1px solid #ededed; 
+  text-align: center; 
+  position: relative;}
+div#LessonContent div.lessonStep div.image div.caption {
+  text-align: right; 
+  font-size: 0.75em; 
+  padding: 0;
+  position: absolute; 
+  bottom: 5px; 
+  right: 10px;}
+div#LessonContent div.lessonStep div.image div.caption a {
+  text-decoration: none; 
+  color: #777; 
+  background: url("../images/icon-zoom.png") no-repeat; 
+  padding-left: 19px; 
+  line-height: 16px !important; 
+  display: block; 
+  float: right;}
+div#LessonContent div.lessonStep div.image:after {
+  content: "."; 
+  display: block; 
+  height: 0; 
+  clear: both; 
+  visibility: hidden;}
+div#LessonPageNav {
+  border-top: 1px solid #cfcfcf; 
+  padding: 1em 0 1.25em 0; 
+  margin-top: 2.5em; 
+  font-family: Georgia, serif; 
+  font-size: 1.1em; 
+  color: #222;}
+div#LessonPageNav ul {
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0;}
+div#LessonPageNav a {
+  color: #222; 
+  text-decoration: none; 
+  display: block;}
+div#LessonPageNav a:hover {text-decoration: underline;}
+div#LessonPageNav li#LessonPageCount {
+  float: left; 
+  width: 135px; 
+  text-align: center;}
+div#LessonPageNav li#LessonPageNext {
+  margin: 0; 
+  padding: 0; 
+  float: right; 
+  width: 340px; 
+  text-align: right;}
+div#LessonPageNav li#LessonPageNext a {
+  padding: 0 29px 0 0; 
+  background: url("../images/icon-next.png") no-repeat top right; 
+  line-height: 21px; 
+  display: block;}
+div#LessonPageNav li#LessonPagePrevious {
+  margin: 0; 
+  line-height: 21px; 
+  float: left; 
+  width: 340px; 
+  text-align: left;}
+div#LessonPageNav li#LessonPagePrevious a {
+  padding: 0 0 0 29px; 
+  background: url("../images/icon-previous.png") no-repeat top left; 
+  line-height: 21px; 
+  display: block;}
+div.LessonHeader p {
+  margin: 0 0 0.65em 0; 
+  font-size: 0.85em;}
+body div#LessonContent div.right {
+  overflow: hidden;
+  display: inline-block; }
+body div#LessonContent div.right {
+  display: block; }
+body div#LessonContent div.right div.image {
+  float: right;
+  margin-left: 1em; }
+body div#LessonContent div.right div.image div.caption a {
+  display: block;
+  text-align: right; }
+
+
+body div#TOC ul {
+  margin: 0; 
+  padding: 0; 
+  list-style-type: none; }
+body div#TOC li {
+  margin: 0; 
+  padding:  0 0 0.5em 0; }
+
+body div#TOC .lesson-title {font-size: 1.2em;}
+
+body div#TOC h2 {
+  border-bottom: 1px solid #e2e2e2; 
+  padding-bottom: 0.05em; 
+  color:#333;}
+body div#TOC div.section {margin-top:1.5em;}
+body div#TOC div.description {font-size: 85%;}
+body div#TOC div.description p:last-child {margin-bottom:0;}
+body div#TOC div.description > p {margin-top:0.3em;}
+body div#TOC li + li { margin-top: 1em;}
+
+body div#lessonNavigation {
+  border-top: 1px solid #ccc;
+  padding-top: 1em;
+  padding-bottom: 1px;}
+body div#lessonNavigation table td {
+  width: 33%;
+  padding: 0 2em; }
+body div#lessonNavigation table td.TOC {
+  text-align: center;
+  padding: 0; }
+
+/* END ScreenSteps Template Default */
