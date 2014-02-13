@@ -54,7 +54,7 @@ class CTCTCF7 {
 		add_filter('plugin_action_links', array('CTCTCF7', 'plugins_action_links'), 10, 2 );
 		add_action('admin_menu', array('CTCTCF7', 'admin_menu'));
 		add_action('wpcf7_after_save', array('CTCTCF7', 'save_form_settings'));
-		add_action('wpcf7_admin_before_subsubsub', array('CTCTCF7', 'add_meta_box' ));
+		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'add_meta_box' ));
 		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'show_ctct_metabox' ));
 
 		// Add icon to activated form list
