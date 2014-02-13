@@ -1,9 +1,9 @@
 === Contact Form 7 Newsletter ===
 Contributors: katzwebservices, katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Constant%20Form%207%20Constant%20Contact%20Module
-Tags: Constant Contact, Contact Form 7, ContactForm7, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
+Tags: Contact Form 7, ContactForm7, Constant Contact, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
 Requires at least: 3.2
-Tested up to: 3.6.1
+Tested up to: 3.8.1
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -82,6 +82,9 @@ function remove_CTCTCF7_presstrends_plugin() {
 
 == Changelog ==
 
+= 2.0.5 (February 13, 2014) =
+* Fixed: Fatal error causing incomplete loading of form pages. Thanks, [liyo](https://github.com/liyo)
+
 = 2.0 through 2.0.4 =
 * Brand-new way of integrating with Contact Form 7 forms! You no longer need to copy and paste form fields. Now there's a simple drop-down menu to pick your Integration Fields.
 * Added: When a form is connected to Constant Contact, you will see an icon
@@ -122,6 +125,9 @@ function remove_CTCTCF7_presstrends_plugin() {
 * Liftoff!
 
 == Upgrade Notice ==
+
+= 2.0.5 (February 13, 2014) =
+* Fixed: Fatal error causing incomplete loading of form pages. Thanks, [liyo](https://github.com/liyo)
 
 = 2.0 through 2.0.4 =
 * Brand-new way of integrating with Contact Form 7 forms! You no longer need to copy and paste form fields. Now there's a simple drop-down menu to pick your Integration Fields.

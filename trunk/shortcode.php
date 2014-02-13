@@ -35,10 +35,11 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		// Process the form code
 		$WPCF7_ShortcodeManager->do_shortcode($code, false);
 		$output = array(
-			'' => __('Select a Field')
+			'' => __('Select a Field', 'ctctcf7')
 		);
-		if(count($WPCF7_ShortcodeManager->get_scanned_tags())) {
-			foreach ( $WPCF7_ShortcodeManager->scanned_tags as $fe ) {
+		$scanned_form_tags = $WPCF7_ShortcodeManager->get_scanned_tags();
+		if(count($scanned_form_tags)) {
+			foreach ( $scanned_form_tags as $fe ) {
 				if ( empty( $fe['name'] ) )
 					continue;
 
