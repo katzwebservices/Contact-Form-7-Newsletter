@@ -5,10 +5,10 @@ Plugin URI: http://www.katzwebservices.com
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.0.4
+Version: 2.0.5
 */
 
-/*  Copyright 2013 Katz Web Services, Inc. (email: info@katzwebservices.com)
+/*  Copyright 2014 Katz Web Services, Inc. (email: info@katzwebservices.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.0.4';
+	private static $version = '2.0.5';
 
 	function __construct() {
 
@@ -54,7 +54,7 @@ class CTCTCF7 {
 		add_filter('plugin_action_links', array('CTCTCF7', 'plugins_action_links'), 10, 2 );
 		add_action('admin_menu', array('CTCTCF7', 'admin_menu'));
 		add_action('wpcf7_after_save', array('CTCTCF7', 'save_form_settings'));
-		add_action('wpcf7_admin_before_subsubsub', array('CTCTCF7', 'add_meta_box' ));
+		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'add_meta_box' ));
 		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'show_ctct_metabox' ));
 
 		// Add icon to activated form list
