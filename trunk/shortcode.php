@@ -24,22 +24,21 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 	 * @return array Array of shortcodes
 	 */
 	function ajax_generate_dropdowns_from_code() {
-		global $wpcf7_shortcode_manager;
 
 		check_ajax_referer('ctctcf7_generate_dropdowns','ctctcf7_generate_dropdowns');
 
-		$WPCF7_ShortcodeManager = new WPCF7_ShortcodeManager;
+		$WPCF7_ShortcodeManager = WPCF7_ShortcodeManager::get_instance();
 
 		// Form code to scan
 		$code = stripslashes_deep( @$_REQUEST['data'] );
 
 		// Process the form code
-		$wpcf7_shortcode_manager->do_shortcode($code, false);
+		$WPCF7_ShortcodeManager->do_shortcode($code, false);
 		$output = array(
 			'' => __('Select a Field')
 		);
-		if(!empty($wpcf7_shortcode_manager->scanned_tags)) {
-			foreach ( $wpcf7_shortcode_manager->scanned_tags as $fe ) {
+		if(count($WPCF7_ShortcodeManager->get_scanned_tags())) {
+			foreach ( $WPCF7_ShortcodeManager->scanned_tags as $fe ) {
 				if ( empty( $fe['name'] ) )
 					continue;
 
