@@ -88,8 +88,9 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 			if($value['basetype'] === 'ctct') {
 				$lists = isset($obj->posted_data[$value['name']]) ? (array)$obj->posted_data[$value['name']] : false;
 
-				$username = self::get_username();
 				if(!empty($lists)) {
+
+					$username = self::get_username();
 
 					// Lists that are posted are ONLY the IDs, not the path.
 					// we convert that to the path now.
