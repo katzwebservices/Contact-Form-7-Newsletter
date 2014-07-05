@@ -3,7 +3,7 @@ Contributors: katzwebservices, katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Constant%20Form%207%20Constant%20Contact%20Module
 Tags: Contact Form 7, ContactForm7, Constant Contact, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
 Requires at least: 3.2
-Tested up to: 3.8.1
+Tested up to: 3.9.1
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -82,6 +82,11 @@ function remove_CTCTCF7_presstrends_plugin() {
 
 == Changelog ==
 
+= 2.0.6 (July 5, 2014) =
+* Fixed: Expired API Key. The previous Constant Contact key expired. __This is an important update that fixes the plugin not sending entries to Constant Contact.__
+* Modified: Attempt to fix [issue #24](https://github.com/katzwebservices/Contact-Form-7-Newsletter/issues/24)
+* Modified: Removed PressTrends integration
+
 = 2.0.5 (February 13, 2014) =
 * Fixed: Fatal error causing incomplete loading of form pages. Thanks, [liyo](https://github.com/liyo)
 
@@ -125,6 +130,11 @@ function remove_CTCTCF7_presstrends_plugin() {
 * Liftoff!
 
 == Upgrade Notice ==
+
+= 2.0.6 (July 5, 2014) =
+* Fixed: Expired API Key. The previous Constant Contact key expired. __This is an important update that fixes the plugin not sending entries to Constant Contact.__
+* Modified: Attempt to fix [issue #24](https://github.com/katzwebservices/Contact-Form-7-Newsletter/issues/24)
+* Modified: Removed PressTrends integration
 
 = 2.0.5 (February 13, 2014) =
 * Fixed: Fatal error causing incomplete loading of form pages. Thanks, [liyo](https://github.com/liyo)
