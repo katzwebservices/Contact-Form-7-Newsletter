@@ -69,7 +69,7 @@ To remove PressTrends integration, add the code to your theme's functions.php fi
 `
 add_action('plugins_loaded', 'remove_CTCTCF7_presstrends_plugin', 20);
 function remove_CTCTCF7_presstrends_plugin() {
-	remove_action('admin_init', array('CTCTCF7', 'presstrends_plugin'));
+    remove_action('admin_init', array('CTCTCF7', 'presstrends_plugin'));
 }
 `
 
@@ -81,6 +81,9 @@ function remove_CTCTCF7_presstrends_plugin() {
 4. When a form is connected to Constant Contact, you will see this icon
 
 == Changelog ==
+
+= 2.0.6.1 (August 19, 2014) = 
+* Fixed: Submission errors for sites with error reporting enabled and no list selection added in a form
 
 = 2.0.6 (July 5, 2014) =
 * Fixed: Expired API Key. The previous Constant Contact key expired. __This is an important update that fixes the plugin not sending entries to Constant Contact.__
@@ -130,6 +133,9 @@ function remove_CTCTCF7_presstrends_plugin() {
 * Liftoff!
 
 == Upgrade Notice ==
+
+= 2.0.6.1 (August 19, 2014) = 
+* Fixed: Submission errors for sites with error reporting enabled and no list selection added in a form
 
 = 2.0.6 (July 5, 2014) =
 * Fixed: Expired API Key. The previous Constant Contact key expired. __This is an important update that fixes the plugin not sending entries to Constant Contact.__

@@ -27,17 +27,30 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 
 		check_ajax_referer('ctctcf7_generate_dropdowns','ctctcf7_generate_dropdowns');
 
-		$WPCF7_ShortcodeManager = WPCF7_ShortcodeManager::get_instance();
+		// Fix issue where the WPCF7 plugin isn't around
+		if( !defined( 'WPCF7_PLUGIN_DIR' ) ) { return; }
+
+		// Again, attempt to fix
+		// https://github.com/katzwebservices/Contact-Form-7-Newsletter/issues/24
+		if( !class_exists( 'WPCF7_ShortcodeManager' ) ) {
+			include_once WPCF7_PLUGIN_DIR . '/includes/shortcodes.php';
+		}
+
+		// They must be using version CF7 3.0 or less
+		if( !class_exists( 'WPCF7_ShortcodeManager' ) ) {
+			return;
+		}
+
+		$output = array(
+			'' => __('Select a Field', 'ctctcf7')
+		);
 
 		// Form code to scan
 		$code = stripslashes_deep( @$_REQUEST['data'] );
 
-		// Process the form code
-		$WPCF7_ShortcodeManager->do_shortcode($code, false);
-		$output = array(
-			'' => __('Select a Field', 'ctctcf7')
-		);
-		$scanned_form_tags = $WPCF7_ShortcodeManager->get_scanned_tags();
+		// Get the tags from the form code
+		$scanned_form_tags = WPCF7_ShortcodeManager::get_instance()->scan_shortcode( $code );
+
 		if(count($scanned_form_tags)) {
 			foreach ( $scanned_form_tags as $fe ) {
 				if ( empty( $fe['name'] ) )
@@ -57,8 +70,8 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 		header('Content-Type: application/json');
-		echo json_encode($output);
-		die();
+
+		exit( json_encode($output) );
 	}
 
 	/**
@@ -81,6 +94,11 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 				$cf7_ctct['accept'] = true;
 
 			}
+		}
+
+		// If there are no scanned form tags, return.
+		if( empty( $obj->scanned_form_tags ) || !is_array( $obj->scanned_form_tags ) ) {
+			return $cf7_ctct;
 		}
 
 		// Process the submitted lists
@@ -522,4 +540,4 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 
 }
 
-$CTCTCF7_Shortcode = new CTCTCF7_Shortcode;
+new CTCTCF7_Shortcode;
