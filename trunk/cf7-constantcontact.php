@@ -193,11 +193,13 @@ class CTCTCF7 {
 			// for Constant Contact integration.
 			$activeforms = array();
 
-			foreach($forms as &$form) {
-				$is_active = get_option( 'cf7_ctct_'.$form->id() );
+			foreach( $forms as &$form ) {
+				$cf_id = method_exists( $form , 'id' ) ? $form->id() : $form->id;
 
-				if(!empty($is_active) && !empty($is_active['active'])) {
-					$activeforms[] = $form->id();
+				$is_active = get_option( 'cf7_ctct_'. $cf_id );
+
+				if(!empty( $is_active ) && !empty( $is_active['active'] ) ) {
+					$activeforms[] = $cf_id;
 				}
 			}
 
@@ -515,7 +517,8 @@ class CTCTCF7 {
 	}
 
 	static function save_form_settings($args) {
-		update_option( 'cf7_ctct_'.$args->id(), $_POST['wpcf7-ctct'] );
+		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
+		update_option( 'cf7_ctct_'.$cf_id, $_POST['wpcf7-ctct'] );
 	}
 
 	static function add_meta_box() {
@@ -533,11 +536,14 @@ class CTCTCF7 {
 		do_meta_boxes( 'cfseven', 'cf7_ctct', $cf );
 	}
 
-	static function metabox($args) {
+	static function metabox( $args ) {
 
 		$CTCT_SuperClass = new CTCT_SuperClass;
 		$cf7_ctct_defaults = array();
-		$cf7_ctct = get_option( 'cf7_ctct_'.$args->id(), $cf7_ctct_defaults );
+
+		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
+
+		$cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 	?>
 	<script>
@@ -629,11 +635,11 @@ class CTCTCF7 {
 
 
 	static function process_submission($obj) {
-
-		$cf7_ctct = get_option( 'cf7_ctct_'.$obj->id() );
+		$cf_id = method_exists( $obj , 'id' ) ? $obj->id() : $obj->id;
+		$cf7_ctct = get_option( 'cf7_ctct_'.$cf_id );
 
 		// Let the shortcode functionality work with the data using a filter.
-		$cf7_ctct = apply_filters( 'ctctcf7_push', apply_filters( 'ctctcf7_push_form_'.$obj->id(), $cf7_ctct, $obj), $obj);
+		$cf7_ctct = apply_filters( 'ctctcf7_push', apply_filters( 'ctctcf7_push_form_'.$cf_id, $cf7_ctct, $obj), $obj);
 
 		if(empty($cf7_ctct)) { return $obj; }
 
