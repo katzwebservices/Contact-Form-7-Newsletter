@@ -81,7 +81,8 @@ function remove_CTCTCF7_presstrends_plugin() {
 4. When a form is connected to Constant Contact, you will see this icon
 
 == Changelog ==
-= 2.0.6.2 (October 24, 2014) =
+
+= 2.0.6.2 & 2.0.6.3 (October 24, 2014) =
 * Fixed: Contacts not being added to list
 
 = 2.0.6.1 (August 19, 2014) =
@@ -135,6 +136,8 @@ function remove_CTCTCF7_presstrends_plugin() {
 * Liftoff!
 
 == Upgrade Notice ==
+= 2.0.6.3 (October 24, 2014) =
+* Fixed: Possible conflicts with older versions of CF7
 
 = 2.0.6.2 (October 24, 2014) =
 * Fixed: Contacts not being added to list
