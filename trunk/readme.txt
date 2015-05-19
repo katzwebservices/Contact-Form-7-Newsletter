@@ -3,7 +3,7 @@ Contributors: katzwebservices, katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Constant%20Form%207%20Constant%20Contact%20Module
 Tags: Contact Form 7, ContactForm7, Constant Contact, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
 Requires at least: 3.2
-Tested up to: 3.9.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -81,6 +81,9 @@ function remove_CTCTCF7_presstrends_plugin() {
 4. When a form is connected to Constant Contact, you will see this icon
 
 == Changelog ==
+
+= 2.0.6.2 (May 19, 2015) = 
+* Fixed: Updated help docs Javascript to fix security issue. **Please update!**
 
 = 2.0.6.1 (August 19, 2014) = 
 * Fixed: Submission errors for sites with error reporting enabled and no list selection added in a form
