@@ -82,10 +82,13 @@ function remove_CTCTCF7_presstrends_plugin() {
 
 == Changelog ==
 
-= 2.0.6.2 (May 19, 2015) = 
+= 2.0.6.4 (May 19, 2015) = 
 * Fixed: Updated help docs Javascript to fix security issue. **Please update!**
 
-= 2.0.6.1 (August 19, 2014) = 
+= 2.0.6.2 & 2.0.6.3 (October 24, 2014) =
+* Fixed: Contacts not being added to list
+
+= 2.0.6.1 (August 19, 2014) =
 * Fixed: Submission errors for sites with error reporting enabled and no list selection added in a form
 
 = 2.0.6 (July 5, 2014) =
@@ -136,8 +139,13 @@ function remove_CTCTCF7_presstrends_plugin() {
 * Liftoff!
 
 == Upgrade Notice ==
+= 2.0.6.3 (October 24, 2014) =
+* Fixed: Possible conflicts with older versions of CF7
 
-= 2.0.6.1 (August 19, 2014) = 
+= 2.0.6.2 (October 24, 2014) =
+* Fixed: Contacts not being added to list
+
+= 2.0.6.1 (August 19, 2014) =
 * Fixed: Submission errors for sites with error reporting enabled and no list selection added in a form
 
 = 2.0.6 (July 5, 2014) =

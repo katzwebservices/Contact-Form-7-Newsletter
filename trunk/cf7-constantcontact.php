@@ -5,7 +5,7 @@ Plugin URI: http://www.katzwebservices.com
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.0.6.2
+Version: 2.0.6.4
 */
 
 /*  Copyright 2015 Katz Web Services, Inc. (email: info@katzwebservices.com)
@@ -36,7 +36,7 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.0.6.2';
+	private static $version = '2.0.6.4';
 
 	function __construct() {
 
@@ -57,7 +57,7 @@ class CTCTCF7 {
 		add_action('admin_footer', array('CTCTCF7', 'add_enabled_icon'));
 
 		// CF7 Processing
-		add_action( 'wpcf7_mail_sent', array('CTCTCF7', 'process_submission' ));
+		add_action( 'wpcf7_mail_sent', array( 'CTCTCF7', 'process_submission' ));
 
 		include_once(trailingslashit(dirname( __FILE__ ))."shortcode.php");
 	}
@@ -193,11 +193,13 @@ class CTCTCF7 {
 			// for Constant Contact integration.
 			$activeforms = array();
 
-			foreach($forms as &$form) {
-				$is_active = get_option( 'cf7_ctct_'.$form->id);
+			foreach( $forms as &$form ) {
+				$cf_id = method_exists( $form , 'id' ) ? $form->id() : $form->id;
 
-				if(!empty($is_active) && !empty($is_active['active'])) {
-					$activeforms[] = $form->id;
+				$is_active = get_option( 'cf7_ctct_'. $cf_id );
+
+				if(!empty( $is_active ) && !empty( $is_active['active'] ) ) {
+					$activeforms[] = $cf_id;
 				}
 			}
 
@@ -515,7 +517,8 @@ class CTCTCF7 {
 	}
 
 	static function save_form_settings($args) {
-		update_option( 'cf7_ctct_'.$args->id, $_POST['wpcf7-ctct'] );
+		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
+		update_option( 'cf7_ctct_'.$cf_id, $_POST['wpcf7-ctct'] );
 	}
 
 	static function add_meta_box() {
@@ -533,11 +536,15 @@ class CTCTCF7 {
 		do_meta_boxes( 'cfseven', 'cf7_ctct', $cf );
 	}
 
-	static function metabox($args) {
+	static function metabox( $args ) {
 
 		$CTCT_SuperClass = new CTCT_SuperClass;
 		$cf7_ctct_defaults = array();
-		$cf7_ctct = get_option( 'cf7_ctct_'.$args->id, $cf7_ctct_defaults );
+
+		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
+
+		$cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
+
 	?>
 	<script>
 		jQuery(document).ready(function($) {
@@ -550,11 +557,11 @@ class CTCTCF7 {
 	</script>
 	<div class="ctctcf7-tooltip" title="<h6><?php _e('Backward Compatibility', 'ctctcf7'); ?></h6><p><?php _e('Starting with Version 2.0 of Contact Form 7 Newsletter plugin, the lists a form sends data to should be defined by generating a tag above &uarr;</p><p>For backward compatibility, <strong>if you don\'t define any forms using a tag above</strong>, your form will continue to send contact data to these lists:', 'ctctcf7'); ?></p><ul class='ul-disc'>
 		<?php
-		$lists = CTCT_SuperClass::getAvailableLists();
-		foreach($lists as $list) {
-			if(!in_array($list['link'], (array)$cf7_ctct['lists'])) { continue; }
-			echo '<li>'.$list['name'].'</li>';
-		}
+		// $lists = CTCT_SuperClass::getAvailableLists();
+		// foreach($lists as $list) {
+		// 	if(!in_array($list['link'], (array)$cf7_ctct['lists'])) { continue; }
+		// 	echo '<li>'.$list['name'].'</li>';
+		// }
 		?></ul><p><strong>For full instructions, go to the Contact > Constant Contact page and click 'View integration instructions'.</strong></p>"><?php _e('Where are my lists?', 'ctctcf7'); ?></div>
 
 	<a href="http://katz.si/4w"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact Logo" style="margin-top:.5em;" /></a>
@@ -575,9 +582,11 @@ class CTCTCF7 {
 
 	<!-- Backward Compatibility -->
 	<div><?php
-		foreach((array)$cf7_ctct['lists'] as $list) {
-			echo '<input type="hidden" name="wpcf7-ctct[lists][]" value="'.$list.'"  />';
-		}
+		if( !empty( $cf7_ctct['lists'] ) ) :
+			foreach((array)$cf7_ctct['lists'] as $list) {
+				echo '<input type="hidden" name="wpcf7-ctct[lists][]" value="'.$list.'"  />';
+			}
+		endif;
 	?></div>
 	<!-- End Backward Compatibility -->
 
@@ -626,23 +635,22 @@ class CTCTCF7 {
 
 
 	static function process_submission($obj) {
-
-		$cf7_ctct = get_option( 'cf7_ctct_'.$obj->id );
+		$cf_id = method_exists( $obj , 'id' ) ? $obj->id() : $obj->id;
+		$cf7_ctct = get_option( 'cf7_ctct_'.$cf_id );
 
 		// Let the shortcode functionality work with the data using a filter.
-		$cf7_ctct = apply_filters( 'ctctcf7_push', apply_filters( 'ctctcf7_push_form_'.$obj->id, $cf7_ctct, $obj), $obj);
+		$cf7_ctct = apply_filters( 'ctctcf7_push', apply_filters( 'ctctcf7_push_form_'.$cf_id, $cf7_ctct, $obj), $obj);
 
 		if(empty($cf7_ctct)) { return $obj; }
 
-		if(empty($cf7_ctct['active']) || empty($cf7_ctct['fields']) || empty($cf7_ctct['lists'])) { return $obj; }
+	//	if(empty($cf7_ctct['active']) || empty($cf7_ctct['fields']) || empty($cf7_ctct['lists'])) { return $obj; }
+
+		if( empty( $cf7_ctct['active'] ) || empty( $cf7_ctct['fields'] ) ) { return $obj; }
 
 		self::get_includes();
 
 		// If it doesn't load for some reason....
 		if(!class_exists('CTCT_SuperClass')) { return $obj; }
-
-		// If there are no fields defined.
-		if(empty($cf7_ctct['fields'])) { return $obj; }
 
 		$contact = array();
 		foreach($cf7_ctct['fields'] as $key => $field) {
@@ -650,7 +658,9 @@ class CTCTCF7 {
 			if(empty($key) || empty($field)) { continue; }
 
 			$value = self::get_submitted_value($field, $obj);
+
 			$contact[$key] = self::process_field($key, $value);
+
 		}
 
 		$contact = self::process_contact($contact);
@@ -677,6 +687,9 @@ class CTCTCF7 {
 			$contact['opt_in_source'] = 'ACTION_BY_CUSTOMER';
 		}
 
+		// calculate subscribed lists
+		$requested_lists = self::get_submitted_lists();
+
 		// Create a new contact.
 		if(!$contact_exists) {
 			$expected_response = 201;
@@ -684,8 +697,8 @@ class CTCTCF7 {
 			$Contact = $CTCT_SuperClass->CC_Contact($contact);
 			$ExistingContact = false;
 
-			foreach((array)$cf7_ctct['lists'] as $list) {
-				$Contact->setLists($list);
+			foreach( $requested_lists as $list ) {
+				$Contact->setLists( $list );
 			}
 			$Contact->setOptInSource($contact['opt_in_source']);
 			$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact($Contact, false);
@@ -704,7 +717,7 @@ class CTCTCF7 {
 			// Update Lists
 			$lists = $ExistingContact->getLists();
 
-			foreach((array)$cf7_ctct['lists'] as $list) {
+			foreach( $requested_lists as $list) {
 				$lists[] = 'https://api.constantcontact.com'.$list;
 			}
 
@@ -717,6 +730,7 @@ class CTCTCF7 {
 			}
 
 			$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact($ExistingContact->getId(), $ExistingContact, false);
+
 		}
 
 		if(floatval($response['info']['http_code']) !== floatval($expected_response)) {
@@ -726,6 +740,35 @@ class CTCTCF7 {
 		}
 
 		return $obj;
+	}
+
+	static function get_submitted_lists() {
+		$submitted = null;
+		$lists = $output = array();
+		if( class_exists('WPCF7_Submission') ) {
+			$submission = WPCF7_Submission::get_instance();
+			$submitted = $submission ? $submission->get_posted_data() : null;
+		}
+
+		if( $submitted !== null && is_array( $submitted ) ) {
+			foreach( $submitted as $key => $data ) {
+				if( false !== strpos( $key, 'ctct-' ) ) {
+					$lists = $data;
+					break;
+				}
+			}
+		}
+
+		$all_lists = CTCT_SuperClass::getAvailableLists();
+		if( is_array( $all_lists ) ) {
+			foreach( $all_lists as $list ) {
+				if( in_array( $list['id'], $lists ) ) {
+					$output[] = $list['link'];
+				}
+			}
+		}
+
+		return $output;
 	}
 
 	static public function mapMergeVars($contact, &$ExistingContact) {
@@ -811,6 +854,16 @@ class CTCTCF7 {
 	 */
 	static function get_submitted_value($subject, &$obj, $pattern = '/\[\s*([a-zA-Z_][0-9a-zA-Z:._-]*)\s*\]/') {
 
+		// new method ( since Contact Form 7 Version 4.0.1 )
+		if( function_exists( 'wpcf7_mail_replace_tags' ) ) {
+
+			$subject = preg_replace('/^(?:\[?)(.*)(?:\]?)$/ism', '[$1]', $subject);
+			$replaced = wpcf7_mail_replace_tags( $subject );
+			return $replaced;
+
+		}
+
+		// Keeping below for back compatibility (??)
 		if(is_callable(array($obj, 'replace_mail_tags'))) {
 
 			// Make sure the title is wrapped in []
