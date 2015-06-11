@@ -33,6 +33,8 @@ You can configure integrations on a per-form basis. Different Contact Form 7 for
 * Sync form fields to Constant Contact fields, including your Custom Fields
 * Add a newsletter opt-in checkbox to your form (see <a href="http://wordpress.org/extend/plugins/contact-form-7-newsletter/faq/">plugin FAQs</a> to learn how)
 
+#### This plugin requires Contact Form 7 4.2 or newer
+
 == Installation ==
 
 1. Upload `contact-form-7-constantcontact to the `/wp-content/plugins/` directory

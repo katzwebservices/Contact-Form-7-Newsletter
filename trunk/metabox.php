@@ -67,7 +67,7 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 			?>
 			<div class="half-<?php if($i % 2 === 0) { echo 'left'; } else { echo 'right'; }?>" style="clear:none;">
 				<div class="mail-field">
-					<label for="wpcf7-ctct-<?php echo $var['tag']; ?>"><?php echo $var['name']; echo !empty($var['req']) ? _e(' <strong>&larr; This setting is required.</strong>', 'ctctcf7') : ''; ?></label><br />
+					<label for="wpcf7-ctct-<?php echo $var['tag']; ?>"><?php echo $var['name']; echo !empty($var['req']) ? _e('&larr; This setting is required.</strong>', 'ctctcf7') : ''; ?></label><br />
 					<input type="text" id="wpcf7-ctct-<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>" name="wpcf7-ctct[fields][<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>]" class="wide" size="70" value="<?php echo @esc_attr( isset($cf7_ctct['fields'][$var['tag']]) ? $cf7_ctct['fields'][$var['tag']] : '' ); ?>" <?php if(isset($var['placeholder'])) { echo ' placeholder="Example: '.$var['placeholder'].'"'; } ?> />
 				</div>
 			</div>

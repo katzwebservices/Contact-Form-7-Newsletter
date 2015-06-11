@@ -40,6 +40,14 @@ class CTCTCF7 {
 
 	function __construct() {
 
+		// Require Version 4.2 of CF7
+		if( ! $this->is_cf7_42_or_greater() ) {
+
+			add_action('admin_notices', array( $this, 'cf7_42_required_notice' ));
+
+			return;
+		}
+
 		// Upgrade messages
 		add_action('admin_notices', array( $this, 'updated_message' ));
 		add_action('admin_init', array( $this, 'hide_updated_message' ));
@@ -61,6 +69,35 @@ class CTCTCF7 {
 		add_action( 'wpcf7_mail_sent', array( $this, 'process_submission' ));
 
 		include_once(trailingslashit(dirname( __FILE__ ))."shortcode.php");
+	}
+
+	/**
+	 * Show a notice when CF7 4.2 isn't active
+	 * @since 2.1
+	 * @return void
+	 */
+	public function cf7_42_required_notice() {
+
+		if( NULL === $this->is_cf7_42_or_greater() ) {
+			$message = esc_html__('Contact Form 7 Newsletter requires Contact Form 7 to be active.', 'ctctcf7' );
+		} else {
+			$message = sprintf( esc_html__('Contact Form 7 Newsletter requires Contact Form 7 version 4.2 or greater. Please %supdate the Contact Form 7 plugin%s.', 'ctctcf7' ), '<a href="'.admin_url('update-core.php').'">', '</a>' );
+		}
+
+		echo '<div class="error notice is-dismissible">' . wpautop( $message ) . '</div>';
+	}
+
+	/**
+	 * @since 2.1
+	 * @return bool True: CF7 4.2 or greater is active. False: lesser version. NULL: inactive.
+	 */
+	public function is_cf7_42_or_greater() {
+
+		if( ! defined('WPCF7_VERSION') ) {
+			return null;
+		}
+
+		return version_compare( WPCF7_VERSION, '4.2', '>=' );
 	}
 
 	/**
