@@ -131,10 +131,10 @@ class CTCTCF7 {
 
 					<a class="button-primary button" href="%s">Go to Contact Form 7</a><a class="button-secondary button alignright" id="hide-cf7-update" href="%s">Got it, hide this 	message.</a>
 					'),
-					plugins_url( 'help/howto.html#step_10', __FILE__ ),
-					plugins_url('favicon.png',__FILE__),
-					admin_url( 'admin.php?page=wpcf7' ),
-					add_query_arg(array('hide-cf7-update' => true) ))
+						plugins_url( 'help/howto.html#step_10', __FILE__ ),
+						plugins_url('favicon.png',__FILE__),
+						admin_url( 'admin.php?page=wpcf7' ),
+						esc_url( add_query_arg(array('hide-cf7-update' => true) ) ) )
 				);
 
 				echo '</div></div>';
