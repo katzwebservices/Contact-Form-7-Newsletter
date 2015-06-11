@@ -618,6 +618,8 @@ class CTCTCF7 {
 
 			// Remove dupe lists
 			$set_lists = array_unique($lists);
+			// Remove existing lists then re-add them
+			$ExistingContact->removeLists();
 
 			// Update contact lists
 			foreach($set_lists as $list) {

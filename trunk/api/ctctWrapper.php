@@ -1458,7 +1458,7 @@
 
 		public function setLists( $value ) { $this->lists[] = $value; }
 		public function getLists() { return $this->lists; }
-		public function removeLists() { $this->lists=""; }
+		public function removeLists() { $this->lists= array(); }
 
 		public function setBounces( $value ) { $this->bounces[] = $value; }
 		public function getBounces() { return $this->bounces; }
