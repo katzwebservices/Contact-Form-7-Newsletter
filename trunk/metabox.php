@@ -76,7 +76,7 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 		<div class="clear mail-field" style="width:50%;">
 			<label for="wpcf7-ctct-accept"><?php echo esc_html( __( 'Opt-In Field', 'ctctcf7' ) ); ?>
-				<span class="howto"><?php _e('<strong>If you generated a "Constant Contact Lists" field above, this setting is not necessary, and will be ignored.</strong>', 'ctctcf7'); ?></span>
+				<span class="howto"><strong><?php printf( esc_html__('If you added a %s tag to your Form configuration, this setting is not necessary, and will be ignored.', 'ctctcf7'), '<code>[ctct]</code>' ); ?></strong></span>
 				<input type="text" id="wpcf7-ctct-accept" name="wpcf7-ctct[accept]" placeholder="Example: [checkbox-456]" class="wide" size="70" value="<?php echo esc_attr( isset($cf7_ctct['accept']) ? $cf7_ctct['accept'] : '' ); ?>" />
 				<span class="howto"><?php _e('If the user should check a box to be added to the lists, enter the checkbox field here. Leave blank to have no opt-in field.', 'ctctcf7'); ?></span>
 			</label>
