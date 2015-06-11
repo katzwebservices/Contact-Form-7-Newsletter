@@ -49,7 +49,7 @@
 
 		/**
 		 * Build a <select> dropdown based on the AJAX response
-		 * @param {jQuery Object} response Select dropdown
+		 * @param {jQuery} response Select dropdown
 		 */
 		function CTCTCF7_Build_Dropdown(response) {
 			$select = $('<select />');
@@ -97,10 +97,12 @@
 			// and show the instructions message
 			var checked_lists = $('.ctctcf7_subscribe_list input').serialize();
 			if(checked_lists === '') {
-				$('#ctctcf7-tg-tags div').hide();
+				$( '.control-box:visible').css( 'height', '100%' );
+				$('#ctctcf7-tg-tags div, #wpcf7-tg-pane-ctct .insert-box').hide();
 				$('#ctctcf7-tg-tags h4').show();
 			} else {
-				$('#ctctcf7-tg-tags div').show();
+				$( '.control-box:visible').css( 'height', '343px');
+				$('#ctctcf7-tg-tags div, #wpcf7-tg-pane-ctct .insert-box').show();
 				$('#ctctcf7-tg-tags h4').hide();
 			}
 

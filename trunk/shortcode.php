@@ -277,7 +277,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		if ( ! function_exists( 'wpcf7_add_tag_generator' ) )
 			return;
 
-		wpcf7_add_tag_generator( 'ctct', __( '<img src="'.plugins_url('favicon.png',__FILE__).'" width="16" height="16" alt="" /> Constant Contact Lists', 'ctctcf7' ),
+		wpcf7_add_tag_generator( 'ctct', __( 'Constant Contact Lists', 'ctctcf7' ),
 			'wpcf7-tg-pane-ctct', array(&$this, 'tag_generator' ));
 	}
 
@@ -289,8 +289,17 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		include_once $dir . 'shortcode-js.php';
 	}
 
-
+	function version_42_or_greater() {
+		return defined('WPCF7_VERSION') && version_compare( WPCF7_VERSION, '4.2', '>=' );
 	}
+
+	/**
+	 * @return string HTML link to refresh lists
+	 */
+	function get_refresh_lists_link() {
+		return '<small class="alignright"><a href="'. esc_url( add_query_arg( array('cache' => rand(1,20000)) ) ) . '">'. esc_html__('Refresh Lists', 'ctctcf7') . '</a></small>';
+	}
+
 	function tag_generator() {
 		$dir = trailingslashit(dirname( __FILE__ ));
 		include_once $dir . 'tag-generator.php';
