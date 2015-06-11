@@ -33,6 +33,8 @@ You can configure integrations on a per-form basis. Different Contact Form 7 for
 * Sync form fields to Constant Contact fields, including your Custom Fields
 * Add a newsletter opt-in checkbox to your form (see <a href="http://wordpress.org/extend/plugins/contact-form-7-newsletter/faq/">plugin FAQs</a> to learn how)
 
+#### This plugin requires Contact Form 7 4.2 or newer
+
 == Installation ==
 
 1. Upload `contact-form-7-constantcontact to the `/wp-content/plugins/` directory
@@ -44,8 +46,12 @@ You can configure integrations on a per-form basis. Different Contact Form 7 for
 
 == Frequently Asked Questions ==
 
+= I don't see any settings =
+
+As of version 2.1, this plugin requires Contact Form 7 Version 4.2 or newer. Please update Contact Form 7.
+
 = Do I need a Constant Contact account? =
-Yes, this plugin requires a <a href="http://wordpress.constantcontact.com/features/signup.jsp" title="Sign up for Constant Contact" rel="nofollow">Constant Contact account</a>.
+Yes, this plugin requires a <a href="https://wordpress.constantcontact.com/email-trial/signup.jsp" title="Sign up for Constant Contact" rel="nofollow">Constant Contact account</a>.
 
 = Where is the settings page =
 
@@ -61,17 +67,13 @@ When inserting the Constant Contact List code into your form, you will see code 
 
 Let's look at the part of the code that is `'General Newsletter::#1'`. That part tells the plugin to create an option with the name `General Newsletter` with a List ID of `1`. `'Another List::#40'` creates another option with the name `Another List` and the List ID is `40`. To modify the name of the list, change the part before `::`. You could then rename "General Newsletter" to "Product Information" by changing the code to `'Product Information::#1'`
 
-= This plugin uses PressTrends =
-By installing this plugin, you agree to allow gathering anonymous usage stats through PressTrends. The data gathered is the active Theme name, WordPress version, plugins installed, and other metrics. This allows the developer of this plugin to know what compatibility issues to test for.
+= I want to overwrite list selections for existing users. How? =
 
-To remove PressTrends integration, add the code to your theme's functions.php file:
+By default, the plugin will *add* to the subscribed lists for an existing user and not remove them. If you want to remove the lists instead, add the following code to your functions.php file:
 
-`
-add_action('plugins_loaded', 'remove_CTCTCF7_presstrends_plugin', 20);
-function remove_CTCTCF7_presstrends_plugin() {
-    remove_action('admin_init', array('CTCTCF7', 'presstrends_plugin'));
-}
-`
+`add_filter('ctctcf7_update_contact_lists', '__return_false');`
+
+This will replace existing lists with the selected lists from the form submission.
 
 == Screenshots ==
 
@@ -81,6 +83,15 @@ function remove_CTCTCF7_presstrends_plugin() {
 4. When a form is connected to Constant Contact, you will see this icon
 
 == Changelog ==
+
+= 2.1 (June 11, 2015) =
+* **Requires Contact Form 7 4.2** - please update your CF7 plugin
+    - Updated interface to look good with CF7 4.2
+* Fixed: Updating lists for users
+* Fixed: "The requested URL returned error: 400" error
+* Fixed: Form submission status not displaying on submission
+* Fixed: `add_query_arg()` potential security vulnerability. **Please update!**
+* Added: `ctctcf7_update_contact_lists` filter (see FAQ)
 
 = 2.0.6.4 (May 19, 2015) = 
 * Fixed: Updated help docs Javascript to fix security issue. **Please update!**

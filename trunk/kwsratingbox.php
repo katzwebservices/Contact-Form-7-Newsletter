@@ -33,23 +33,42 @@ function kws_show_rating_box($name = '', $slug = '', $version) {
 
 			if ( !is_wp_error( $api ) ) {
 				// Cache for 2 hours
-				set_transient( $slug.'_plugin_info', $api, 60 * 60 * 2 );
+				set_transient( $slug.'_plugin_info', $api, DAY_IN_SECONDS );
 			}
 		}
 
 		if ( !is_wp_error( $api ) ) {
 
 			if ( !empty( $api->rating ) ) { ?>
-			<p><a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/<?php echo $slug; ?>?rate=5#postform" class="button button-secondary"><?php _e( 'Rate this Plugin', 'wpinterspire' ) ?></a> <strong><?php _e( '&larr; Help spread the word!', 'wpinterspire'); ?></strong></p>
+			<p><a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/<?php echo $slug; ?>?rate=5#postform" class="button button-secondary"><?php _e( 'Rate this Plugin', 'ctctcf7' ) ?></a> <strong><?php _e( '&larr; Help spread the word!', 'ctctcf7'); ?></strong></p>
 				<?php
 				if ( !empty( $api->downloaded ) ) {
-					echo sprintf( __( 'Downloaded %s times.', 'wpinterspire' ), number_format_i18n( $api->downloaded ) );
-				} ?>
-				<div class="star-holder" title="<?php echo esc_attr( sprintf( __( '(Average rating based on %s ratings)', 'wpinterspire' ), number_format_i18n( $api->num_ratings ) ) ); ?>">
-					<div class="star-rating" style="width: <?php echo esc_attr( $api->rating ) ?>px"></div>
+					echo sprintf( __( 'Downloaded %s times.', 'ctctcf7' ), number_format_i18n( $api->downloaded ) );
+				}
+
+				if( function_exists('wp_star_rating') ) {
+
+					$ratings_args = array(
+						'rating' => $api->rating,
+						'type' => 'percent',
+						'number' => $api->num_ratings
+					);
+
+					wp_star_rating( $ratings_args );
+
+				} else {
+					?>
+					<div class="star-holder"
+					     title="<?php echo esc_attr( sprintf( __( '(Average rating based on %s ratings)', 'ctctcf7' ), number_format_i18n( $api->num_ratings ) ) ); ?>">
+						<div class="star-rating" style="width: <?php echo esc_attr( $api->rating ) ?>px"></div>
+					</div>
+				<?php
+				}
+				?>
+				<div>
+					<small style="display:block;"><?php
+						echo sprintf( __( 'Average rating based on %s ratings.', 'ctctcf7' ), number_format_i18n( $api->num_ratings ) ); ?></small>
 				</div>
-				<div><small style="display:block;"><?php
-					echo sprintf( __( 'Average rating based on %s ratings.', 'wpinterspire' ), number_format_i18n( $api->num_ratings ) ); ?></small></div>
 				<?php
 			}
 		} // if ( !is_wp_error($api)
@@ -63,7 +82,7 @@ function kws_show_rating_box($name = '', $slug = '', $version) {
 				version_compare( $api->requires, $wp_version, '<=')
 			) {
 
-				$message = sprintf(__( '%sA newer version of %s is available: %s.%s', 'wpinterspire' ), '<a class="thickbox" title="Update '.esc_html( $name ).'" href="'.admin_url('plugin-install.php?tab=plugin-information&plugin='.$slug.'&section=changelog&TB_iframe=true&width=640&height=808').'">', esc_html($name), $api->version, '</a>');
+				$message = sprintf(__( '%sA newer version of %s is available: %s.%s', 'ctctcf7' ), '<a class="thickbox" title="Update '.esc_html( $name ).'" href="'.admin_url('plugin-install.php?tab=plugin-information&plugin='.$slug.'&section=changelog&TB_iframe=true&width=640&height=808').'">', esc_html($name), $api->version, '</a>');
 
 				// Don't use make_notice_box so can be reused in other plugins.
 				echo '<div id="message" class="updated">'.wpautop($message).'</div>';
@@ -74,7 +93,7 @@ function kws_show_rating_box($name = '', $slug = '', $version) {
 				echo '<div id="message" class="updated">';
 				echo wpautop(sprintf(__('There is a newer version of %s available, but your current version of WordPress does not support it.
 
-					%sUpdate WordPress%s', 'wpinterspire'), $name, '<a class="button button-secondary" href="'.admin_url( 'update-core.php' ).'">', '</a>'));
+					%sUpdate WordPress%s', 'ctctcf7'), $name, '<a class="button button-secondary" href="'.admin_url( 'update-core.php' ).'">', '</a>'));
 				echo '</div>';
 			}
 			else {
