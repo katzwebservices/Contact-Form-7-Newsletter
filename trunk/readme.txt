@@ -84,7 +84,7 @@ This will replace existing lists with the selected lists from the form submissio
 
 == Changelog ==
 
-= 2.1 (June 11, 2015) =
+= 2.1 and 2.1.1 (June 11, 2015) =
 * **Requires Contact Form 7 4.2** - please update your CF7 plugin
     - Updated interface to look good with CF7 4.2
 * Fixed: Updating lists for users
@@ -92,6 +92,7 @@ This will replace existing lists with the selected lists from the form submissio
 * Fixed: Form submission status not displaying on submission
 * Fixed: `add_query_arg()` potential security vulnerability. **Please update!**
 * Added: `ctctcf7_update_contact_lists` filter (see FAQ)
+* Fixed (2.1.1): Plugin didn't recognize CF7 4.2 properly
 
 = 2.0.6.4 (May 19, 2015) = 
 * Fixed: Updated help docs Javascript to fix security issue. **Please update!**
