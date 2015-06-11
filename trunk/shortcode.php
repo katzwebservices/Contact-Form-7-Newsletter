@@ -289,10 +289,6 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		include_once $dir . 'shortcode-js.php';
 	}
 
-	function version_42_or_greater() {
-		return defined('WPCF7_VERSION') && version_compare( WPCF7_VERSION, '4.2', '>=' );
-	}
-
 	/**
 	 * @return string HTML link to refresh lists
 	 */

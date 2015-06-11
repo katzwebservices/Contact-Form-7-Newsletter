@@ -5,7 +5,7 @@ Plugin URI: http://www.katzwebservices.com
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.0.6.4
+Version: 2.1
 */
 
 /*  Copyright 2015 Katz Web Services, Inc. (email: info@katzwebservices.com)
@@ -36,30 +36,52 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.0.6.4';
+	private static $version = '2.1';
 
 	function __construct() {
 
 		// Upgrade messages
-		add_action('admin_notices', array('CTCTCF7', 'updated_message'));
-		add_action('admin_init', array('CTCTCF7', 'hide_updated_message'));
+		add_action('admin_notices', array( $this, 'updated_message' ));
+		add_action('admin_init', array( $this, 'hide_updated_message' ));
 
-		add_action('admin_init', array('CTCTCF7', 'settings_init'));
-		add_action('admin_head', array('CTCTCF7', 'admin_head'));
+		add_action('admin_init', array( $this, 'settings_init'));
+		add_action('admin_head', array($this, 'admin_head') );
 
-		add_filter('plugin_action_links', array('CTCTCF7', 'plugins_action_links'), 10, 2 );
-		add_action('admin_menu', array('CTCTCF7', 'admin_menu'));
-		add_action('wpcf7_after_save', array('CTCTCF7', 'save_form_settings'));
-		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'add_meta_box' ));
-		add_action('wpcf7_admin_after_form', array('CTCTCF7', 'show_ctct_metabox' ));
+		add_filter('plugin_action_links', array( $this, 'plugins_action_links' ), 10, 2 );
+		add_action('admin_menu', array( $this, 'admin_menu') );
+		add_action('wpcf7_after_save', array( $this, 'save_form_settings'));
+
+		/** @since 2.1 **/
+		add_filter( 'wpcf7_editor_panels', array( $this, 'wpcf7_editor_panels') );
 
 		// Add icon to activated form list
-		add_action('admin_footer', array('CTCTCF7', 'add_enabled_icon'));
+		add_action('admin_footer', array( $this, 'add_enabled_icon'));
 
 		// CF7 Processing
-		add_action( 'wpcf7_mail_sent', array( 'CTCTCF7', 'process_submission' ));
+		add_action( 'wpcf7_mail_sent', array( $this, 'process_submission' ));
 
 		include_once(trailingslashit(dirname( __FILE__ ))."shortcode.php");
+	}
+
+	/**
+	 * Add panels in Contact Form 7 4.2+
+	 *
+	 * @since 2.1
+	 *
+	 * @param array $panels registered tabs in Form Editor
+	 *
+	 * @return array tabs with CTCTCF7 tab added
+	 */
+	function wpcf7_editor_panels( $panels = array() ) {
+
+		if ( wpcf7_admin_has_edit_cap() ) {
+			$panels['ctctcf7'] = array(
+				'title'    => __( 'Constant Contact', 'ctctcf7' ),
+				'callback' => array( $this, 'metabox' )
+			);
+		}
+
+		return $panels;
 	}
 
 	/**
@@ -97,7 +119,8 @@ class CTCTCF7 {
 	 *
 	 * Fake AJAX. No security really needed...
 	 */
-	static function hide_updated_message() {
+	public function hide_updated_message() {
+
 		if(isset($_REQUEST['hide-cf7-update']) && current_user_can( 'manage_options' )) {
 			$deleted = delete_option('ctct_cf7_updated');
 
@@ -108,12 +131,13 @@ class CTCTCF7 {
 			return;
 		}
 	}
+
 	/**
 	 * If the settings show that the plugin has been updated,
 	 * then show an updated message.
 	 *
 	 */
-	static function updated_message() {
+	public function updated_message() {
 		if($previous_version = get_option( 'ctct_cf7_updated' )) {
 
 			// If this upgrade is from V1 to V2
@@ -147,7 +171,7 @@ class CTCTCF7 {
 					break;
 			}
 
-?>
+			?>
 			<script>
 				jQuery(document).ready(function($) {
 					$('.cf7com-links').hide();
@@ -168,7 +192,7 @@ class CTCTCF7 {
 					});
 				});
 			</script>
-			<?php
+		<?php
 		}
 	}
 
@@ -176,7 +200,7 @@ class CTCTCF7 {
 	 * Add an icon to forms with Constant Contact integration enabled on the Contact Form 7 Edit page.
 	 *
 	 */
-	static function add_enabled_icon() {
+	public function add_enabled_icon() {
 		global $pagenow, $plugin_page;
 
 		if(empty($plugin_page) || empty($pagenow)) { return; }
@@ -210,7 +234,7 @@ class CTCTCF7 {
 			if(empty($activeforms)) { return; }
 
 			// Otherwise, add the icon to each row with integration.
-?>
+			?>
 			<style>
 				.ctct_enabled {
 					position: absolute;
@@ -237,11 +261,11 @@ class CTCTCF7 {
 					});
 				});
 			</script>
-			<?php
+		<?php
 		}
 	}
 
-	static function admin_head() {
+	public function admin_head() {
 		global $plugin_page;
 
 		if($plugin_page === 'ctct_cf7') { wp_enqueue_script('thickbox'); }
@@ -249,68 +273,68 @@ class CTCTCF7 {
 		if($plugin_page !== 'wpcf7') { return; }
 
 		wp_enqueue_script('jquery-ui-tooltip');
-?>
+		?>
 		<script type="text/javascript">
 
-		jQuery(document).ready(function($) {
+			jQuery(document).ready(function($) {
 
 
-			$('#wpcf7-ctct-active').change(function() {
-				if($(this).is(':checked')) {
-					$('#wpcf7-ctct-all-fields').show();
-				} else {
-					$('#wpcf7-ctct-all-fields').hide();
-				}
-			}).trigger('change');
-		});
-	</script>
+				$('#wpcf7-ctct-active').change(function() {
+					if($(this).is(':checked')) {
+						$('#wpcf7-ctct-all-fields').show();
+					} else {
+						$('#wpcf7-ctct-all-fields').hide();
+					}
+				}).trigger('change');
+			});
+		</script>
 
-	<style>
-		.half-left.error {
-			width: 47%;
-			margin: 0 1% 0 0!important;
-		}
-		.ui-tooltip {
-			padding: 18px;
-			position: absolute;
-			z-index: 9999;
-			max-width: 300px;
-			color: #000;
-		    text-shadow: 1px 1px 1px #fff;
-		    font-size: 1.0em;
-			-webkit-border-radius: 6px;
-			-moz-border-radius: 6px;
-			border-radius: 6px;
-		    -webkit-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
-			-moz-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
-			box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
-		}
-		body .ui-tooltip {
-			border: 4px solid #999;
-			background-color: #ededed;
-		}
-		body .ui-tooltip h6 {
-			color: #0e6085;
-			font-size: 1.1em;
-			font-weight: bold;
-			margin: 0 0 3px 0 !important;
-			padding: 0 !important;
-		}
-		.ctctcf7-tooltip {
-			display: block;
-			background: #eee;
-			border-radius: 50px;
-			color: #999;
-			padding:5px 10px;
-			cursor: help;
-			float: right;
-			border: 1px solid #ddd;
-		}
-	</style>
+		<style>
+			.half-left.error {
+				width: 47%;
+				margin: 0 1% 0 0!important;
+			}
+			.ui-tooltip {
+				padding: 18px;
+				position: absolute;
+				z-index: 9999;
+				max-width: 300px;
+				color: #000;
+				text-shadow: 1px 1px 1px #fff;
+				font-size: 1.0em;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
+				-moz-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
+				box-shadow: 0 8px 6px -6px rgba(0,0,0,0.3);
+			}
+			body .ui-tooltip {
+				border: 4px solid #999;
+				background-color: #ededed;
+			}
+			body .ui-tooltip h6 {
+				color: #0e6085;
+				font-size: 1.1em;
+				font-weight: bold;
+				margin: 0 0 3px 0 !important;
+				padding: 0 !important;
+			}
+			.ctctcf7-tooltip {
+				display: block;
+				background: #eee;
+				border-radius: 50px;
+				color: #999;
+				padding:5px 10px;
+				cursor: help;
+				float: right;
+				border: 1px solid #ddd;
+			}
+		</style>
 	<?php
 	}
 
-	static function plugins_action_links( $links, $file ) {
+	public function plugins_action_links( $links, $file ) {
 		if ( $file != plugin_basename( __FILE__ ) )
 			return $links;
 
@@ -349,11 +373,11 @@ class CTCTCF7 {
 		return $value;
 	}
 
-	static function admin_menu() {
+	public function admin_menu() {
 		add_submenu_page( 'wpcf7', __('Constant Contact Contact Form 7 Settings'), __('Constant Contact'), 'manage_options', 'ctct_cf7', array('CTCTCF7', 'settings_page'));
 	}
 
-	static function settings_init() {
+	public function settings_init() {
 
 		self::get_includes();
 
@@ -362,34 +386,34 @@ class CTCTCF7 {
 		add_settings_section(
 			'ctct_api',
 			__('Configure your Constant Contact account settings.'),
-			array('CTCTCF7', 'setting_description'),
+			array( $this, 'setting_description'),
 			'ctct_cf7'
 		);
 		add_settings_field(
 			'ctct_cf7_username',
 			__('Constant Contact Username'),
-			array('CTCTCF7', 'setting_input_username'),
+			array( $this, 'setting_input_username'),
 			'ctct_cf7',
 			'ctct_api'
 		);
 		add_settings_field(
 			'ctct_cf7_password',
 			__('Constant Contact Password'),
-			array('CTCTCF7', 'setting_input_password'),
+			array( $this, 'setting_input_password'),
 			'ctct_cf7',
 			'ctct_api'
 		);
 	}
 
-	static function setting_description() {
+	public function setting_description() {
 		echo __('Enter the username and password you use to log in to Constant Contact.', 'ctctcf7');
 	}
 
-	static function setting_input_username() {
+	public function setting_input_username() {
 		echo '<input autocomplete="off" name="ctct_cf7[username]" id="ctct_cf7_username" type="text" value="'.self::get_username().'" class="text" />';
 	}
 
-	static function setting_input_password() {
+	public function setting_input_password() {
 		echo '<input autocomplete="off" name="ctct_cf7[password]" id="ctct_cf7_password" type="password" value="'.self::get_password().'" class="password" />';
 	}
 
@@ -418,15 +442,15 @@ class CTCTCF7 {
 	static function settings_page() {
 		wp_enqueue_style( 'thickbox' );
 		@include_once(plugin_dir_path(__FILE__).'kwsratingbox.php');
-?>
-	<div class="wrap">
-		<?php kws_show_rating_box('Contact Form 7 - Constant Contact Module', 'contact-form-7-newsletter', self::get_version()); ?>
+		?>
+		<div class="wrap">
+			<?php kws_show_rating_box('Contact Form 7 - Constant Contact Module', 'contact-form-7-newsletter', self::get_version()); ?>
 
-		<a href="http://katz.si/4w"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact" style="margin-top:1em;" /></a>
-		<h2 style="padding-top:0;margin-bottom:.5em;"><?php _e('Contact Form 7 Module', 'ctctcf7'); ?></h2>
+			<a href="http://katz.si/4w"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact" style="margin-top:1em;" /></a>
+			<h2 style="padding-top:0;margin-bottom:.5em;"><?php _e('Contact Form 7 Module', 'ctctcf7'); ?></h2>
 
-		<form action="options.php" method="post">
-			<?php
+			<form action="options.php" method="post">
+				<?php
 				$valid = self::validateApi();
 
 				$message = '';
@@ -458,65 +482,69 @@ class CTCTCF7 {
 				echo '<div class="clear"></div>';
 				settings_fields('ctct_cf7');
 				do_settings_sections('ctct_cf7');
-			?>
-			<p class="submit"><input class="button-primary" type="submit" name="Submit" value="<?php _e('Submit', 'ctctcf7'); ?>" />
-		</form>
-	</div><!-- .wrap -->
+				?>
+				<p class="submit"><input class="button-primary" type="submit" name="Submit" value="<?php _e('Submit', 'ctctcf7'); ?>" />
+			</form>
+		</div><!-- .wrap -->
 	<?php
 	}
 
 	function show_signup_message() {
 		?>
 		<style type="text/css">
-		.get-em,
-		#grow-with-email,
-		a#free_trial {
-			display:block;
-			text-indent:-9999px;
-			overflow:hidden;
-			float:left;
-		}
-		a#free_trial:hover {
-			background-position: 0px -102px;
-		}
-		#grow-with-email {
-			background-image: url(http://img.constantcontact.com/lp/images/standard/bv2/product_pages/test/grow_with_email_text.png);
-		}
-		#grow-with-email,
-		#grow-with-email a {
-			display: block;
-			border: none;
-			outline: none;
-			height: 91px;
-			width: 720px;
-		}
-		.get-em {
-			float: left;
-			clear: left;
-			width: 201px;
-			height: 81px;
-			background: url('http://img.constantcontact.com/lp/images/standard/bv2/product_pages/test/btn_get_email_white.png') left top no-repeat;
-		}
-		.get-em:hover { background-position: left bottom; }
-		.learn-more { margin-left: 15px!important; }
-		#enter-account-details {
-			width:100%; border-top:1px solid #ccc; margin-top:1em; padding-top:.5em;
-		}
-	</style>
-	<div style="clear:left; float:left;">
-		<h2 class="clear" style="font-size:23px; color: #555;"><strong>Hello!</strong> This plugin requires <a href="http://katz.si/4i" title="Learn more about Constant Contact">a Constant Contact account</a>.</h2>
-		<p id="grow-with-email"><a href="http://katz.si/4i"><strong>Grow with Email Marketing. Guaranteed.</strong> With Email Marketing, it's easy for you to connect with your customers, and for customers to share your message with their networks. And the more customers spread the word about your business, the more you grow</a></p>
-		<p><a class="get-em" href="http://katz.si/4w">Start Your Free Trial</a></p>
-		<h2 class="learn-more alignleft"> or <a href="http://katz.si/4i">Learn More</a></h2>
-		<div class="clear"></div>
-	</div>
+			.get-em,
+			#grow-with-email,
+			a#free_trial {
+				display:block;
+				text-indent:-9999px;
+				overflow:hidden;
+				float:left;
+			}
+			a#free_trial:hover {
+				background-position: 0px -102px;
+			}
+			#grow-with-email {
+				background-image: url(http://img.constantcontact.com/lp/images/standard/bv2/product_pages/test/grow_with_email_text.png);
+			}
+			#grow-with-email,
+			#grow-with-email a {
+				display: block;
+				border: none;
+				outline: none;
+				height: 91px;
+				width: 720px;
+			}
+			.get-em {
+				float: left;
+				clear: left;
+				width: 201px;
+				height: 81px;
+				background: url('http://img.constantcontact.com/lp/images/standard/bv2/product_pages/test/btn_get_email_white.png') left top no-repeat;
+			}
+			.get-em:hover { background-position: left bottom; }
+			.learn-more { margin-left: 15px!important; }
+			#enter-account-details {
+				width:100%; border-top:1px solid #ccc; margin-top:1em; padding-top:.5em;
+			}
+		</style>
+		<div style="clear:left; float:left;">
+			<h2 class="clear" style="font-size:23px; color: #555;"><strong>Hello!</strong> This plugin requires <a href="http://katz.si/4i" title="Learn more about Constant Contact">a Constant Contact account</a>.</h2>
+			<p id="grow-with-email"><a href="http://katz.si/4i"><strong>Grow with Email Marketing. Guaranteed.</strong> With Email Marketing, it's easy for you to connect with your customers, and for customers to share your message with their networks. And the more customers spread the word about your business, the more you grow</a></p>
+			<p><a class="get-em" href="http://katz.si/4w">Start Your Free Trial</a></p>
+			<h2 class="learn-more alignleft"> or <a href="http://katz.si/4i">Learn More</a></h2>
+			<div class="clear"></div>
+		</div>
 
-	<h2 class="clear" id="enter-account-details"><?php _e('Enter your account details below:', 'ctctcf7'); ?></h2>
-	<?php
+		<h2 class="clear" id="enter-account-details"><?php _e('Enter your account details below:', 'ctctcf7'); ?></h2>
+		<?php
 		echo wpautop(sprintf(__('<h3>%sView integration instructions%s.</h3>', 'ctctcf7'), '<a href="'.plugins_url( 'help/howto.html', __FILE__ ).'" target="_blank">', '</a>'));
 	}
 
-	static function save_form_settings($args) {
+	/**
+	 * When saving the CF7 form settings, save the CTCT settings, too
+	 * @param $args
+	 */
+	public function save_form_settings($args) {
 		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
 		update_option( 'cf7_ctct_'.$cf_id, $_POST['wpcf7-ctct'] );
 	}
@@ -529,16 +557,16 @@ class CTCTCF7 {
 	}
 
 
-	static function process_submission($obj) {
+	public function process_submission($obj) {
+
 		$cf_id = method_exists( $obj , 'id' ) ? $obj->id() : $obj->id;
+
 		$cf7_ctct = get_option( 'cf7_ctct_'.$cf_id );
 
 		// Let the shortcode functionality work with the data using a filter.
 		$cf7_ctct = apply_filters( 'ctctcf7_push', apply_filters( 'ctctcf7_push_form_'.$cf_id, $cf7_ctct, $obj), $obj);
 
 		if(empty($cf7_ctct)) { return $obj; }
-
-	//	if(empty($cf7_ctct['active']) || empty($cf7_ctct['fields']) || empty($cf7_ctct['lists'])) { return $obj; }
 
 		if( empty( $cf7_ctct['active'] ) || empty( $cf7_ctct['fields'] ) ) { return $obj; }
 
@@ -595,7 +623,9 @@ class CTCTCF7 {
 			foreach( $requested_lists as $list ) {
 				$Contact->setLists( $list );
 			}
+
 			$Contact->setOptInSource($contact['opt_in_source']);
+
 			$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact($Contact, false);
 
 		}
@@ -606,31 +636,43 @@ class CTCTCF7 {
 			$Contact = false;
 			$ExistingContact = $CTCT_SuperClass->CC_ContactsCollection()->listContactDetails($contact_exists[0][0]);
 			$ExistingContact->setOptInSource($contact['opt_in_source']);
+
 			// Update the existing contact with the new data
 			self::mapMergeVars($contact, $ExistingContact);
 
-			// Update Lists
-			$lists = $ExistingContact->getLists();
-
-			foreach( $requested_lists as $list) {
-				$lists[] = 'https://api.constantcontact.com'.$list;
+			/**
+			 * If you want to replace contact lists instead of updating them, use `__return_false`
+			 *
+			 * @since 2.1
+			 *
+			 * @param boolean $update True: Only add lists to existing contacts; False: Replace lists with submission selections
+			 */
+			if( apply_filters( 'ctctcf7_update_contact_lists', true ) ) {
+				$lists = $ExistingContact->getLists();
+			} else {
+				$lists = array();
 			}
 
-			// Remove dupe lists
-			$set_lists = array_unique($lists);
+			foreach( $requested_lists as $list) {
+				$list_to_add = 'http://api.constantcontact.com'.$list;
+
+				if( !in_array( $list_to_add, $lists ) ) {
+					$lists[] = $list_to_add;
+				}
+			}
+
 			// Remove existing lists then re-add them
 			$ExistingContact->removeLists();
 
-			// Update contact lists
-			foreach($set_lists as $list) {
+			// Add contact lists
+			foreach( $lists as $list ) {
 				$ExistingContact->setLists($list);
 			}
 
 			$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact($ExistingContact->getId(), $ExistingContact, false);
-
 		}
 
-		if(floatval($response['info']['http_code']) !== floatval($expected_response)) {
+		if( empty( $response['info'] ) || ( intval($response['info']['http_code']) !== intval($expected_response) ) ) {
 			do_action('cf7_ctct_failed', $response, $Contact, $ExistingContact);
 		} else {
 			do_action('cf7_ctct_succeeded', $response, $Contact, $ExistingContact);
@@ -709,12 +751,21 @@ class CTCTCF7 {
 		if(!empty($contact['custom_field_15'])) { $ExistingContact->setCustomField15($contact['custom_field_15']); }
 	}
 
+	/**
+	 * If there's a mapped "full_name" field, parse the name into first, middle, and last name pieces
+	 *
+	 * @param array $contact
+	 *
+	 * @return array
+	 */
 	static public function process_contact($contact = array()) {
 
 		// Process the full name tag
 		if(!empty($contact['full_name'])) {
 
-			@include_once(plugin_dir_path(__FILE__).'nameparse.php');
+			if( !function_exists('cf7_newsletter_parse_name') ) {
+				require plugin_dir_path(__FILE__).'nameparse.php';
+			}
 
 			// In case it didn't load for some reason...
 			if(function_exists('cf7_newsletter_parse_name')) {
@@ -733,6 +784,7 @@ class CTCTCF7 {
 
 		return $contact;
 	}
+
 	/**
 	 * If there are custom cases for a field, process them here.
 	 * @param  string $key   Key from CTCT_SuperClass::listMergeVars()
@@ -804,7 +856,7 @@ class CTCTCF7 {
 
 }
 
-$CTCTCF7 = new CTCTCF7;
+new CTCTCF7;
 
 
 if(!function_exists('r')) {

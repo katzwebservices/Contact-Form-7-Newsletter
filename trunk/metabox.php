@@ -1,4 +1,7 @@
 <?php
+/**
+ * @global object $args
+ */
 
 $CTCT_SuperClass = new CTCT_SuperClass;
 $cf7_ctct_defaults = array();
