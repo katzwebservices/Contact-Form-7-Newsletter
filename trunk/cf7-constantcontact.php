@@ -5,7 +5,7 @@ Plugin URI: http://www.katzwebservices.com
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.1
+Version: 2.1.1
 */
 
 /*  Copyright 2015 Katz Web Services, Inc. (email: info@katzwebservices.com)
@@ -36,15 +36,17 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.1';
+	private static $version = '2.1.1';
 
 	function __construct() {
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
+	}
+
+	function plugins_loaded() {
 
 		// Require Version 4.2 of CF7
 		if( ! $this->is_cf7_42_or_greater() ) {
-
 			add_action('admin_notices', array( $this, 'cf7_42_required_notice' ));
-
 			return;
 		}
 
