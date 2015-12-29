@@ -569,8 +569,6 @@ class CTCTCF7 {
 
 			<form action="options.php" method="post">
 				<?php
-				$valid = self::validateApi();
-
 				$message = '';
 				$status  = self::get_plugin_status( 'contact-form-7/wp-contact-form-7.php' );
 				switch ( $status ) {
@@ -591,18 +589,19 @@ class CTCTCF7 {
 
 				if ( is_null( self::get_password() ) && is_null( self::get_username() ) ) {
 					self::show_signup_message();
+				} else if ( is_null( self::get_password() ) ) {
+					echo "<div id='message' class='error alignleft'><p>" . __( 'Your password is empty.', 'ctctcf7' ) . "</p></div>";
+				} else if ( is_null( self::get_username() ) ) {
+					echo "<div id='message' class='error alignleft'><p>" . __( 'Your username is empty.', 'ctctcf7' ) . "</p></div>";
 				} else {
+					$valid = self::validateApi();
 					if ( $valid ) {
 						echo wpautop( sprintf( __( '<h3>Now you can integrate with a Contact Form 7 form. %sView integration instructions%s.</h3>', 'ctctcf7' ), '<a href="' . plugins_url( 'help/howto.html', __FILE__ ) . '" target="_blank">', '</a>' ) );
 
 						echo "<div id='message' class='updated inline alignleft'><p>" . __( 'Your username and password seem to be working.', 'ctctcf7' ) . "</p></div>";
-
-				} elseif(is_null(self::get_password())) {
-					echo "<div id='message' class='error alignleft'><p>".__('Your password is empty.', 'ctctcf7')."</p></div>";
-				} elseif(is_null(self::get_username())) {
-					echo "<div id='message' class='error alignleft'><p>".__('Your username is empty.', 'ctctcf7')."</p></div>";
-				} else {
-					echo "<div id='message' class='error alignleft'><p>".__('Your username and password are not configured properly.', 'ctctcf7')."</p></div>";
+					} else {
+						echo "<div id='message' class='error alignleft'><p>" . __( 'Your username and password are not configured properly.', 'ctctcf7' ) . "</p></div>";
+					}
 				}
 
 				echo '<div class="clear"></div>';
