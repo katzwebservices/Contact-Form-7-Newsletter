@@ -91,7 +91,11 @@ class CTCTCF7 {
 	public function cf7_version_required_notice() {
 
 		if( NULL === $this->is_cf7_valid() ) {
-			$message = esc_html__('Contact Form 7 Newsletter requires Contact Form 7 to be active.', 'ctctcf7' );
+			$button = function_exists('is_network_admin') && is_network_admin() ? '<a href="#contact-form-7">' : '<a href="'. wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=contact-form-7/wp-contact-form-7.php' ), 'activate-plugin_contact-form-7/wp-contact-form-7.php') . '" class="button button-primary">';
+			$button .= esc_html__( 'Activate Contact Form 7 now', 'ctctcf7' );
+			$button .= '</a>';
+			$message = esc_html__('Contact Form 7 Newsletter requires Contact Form 7 to be active. %s', 'ctctcf7' );
+			$message = sprintf( $message, $button );
 		} else {
 			$message = sprintf( esc_html__('Contact Form 7 Newsletter requires Contact Form 7 version %s or greater. Please %supdate the Contact Form 7 plugin%s.', 'ctctcf7' ), self::$required_cf7_version, '<a href="'.admin_url('update-core.php').'">', '</a>' );
 		}
