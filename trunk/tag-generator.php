@@ -1,7 +1,7 @@
 <div class="control-box" style="height: 100%">
 	<?php
 
-	if(!self::validateApi()) {
+	if( ! self::validateApi() ) {
 		?>
 		<div id="wpcf7-tg-pane-ctct">
 			<form action="">
@@ -15,7 +15,7 @@
 		<form action="#">
 			<style>
 				#contact-form-editor-tabs #ctctcf7-tab a {
-					background: url('<?php echo plugins_url('favicon.png',__FILE__); ?>') 5px center no-repeat;
+					background: url('<?php echo plugins_url('favicon.png', __FILE__ ); ?>') 5px center no-repeat;
 					padding-left: 25px;
 				}
 				.js .postbox .tg-pane h3 {
@@ -86,9 +86,9 @@
 						$list_output = $template;
 
 						$value = $list['link'];
-						$label = esc_html ( $list['name'] );
+						$label = esc_html( $list['name'] );
 
-						$checked = checked( ( is_array( $list ) && in_array( $list['link'], $cf7_ctct_lists ) ), true, false);
+						$checked = checked( ( is_array( $list ) && in_array( $list['link'], $cf7_ctct_lists ) ), true, false );
 						#$list_name = str_replace( "'", '&amp;#39;', $list['name'] ).'::#'.$list['id'];
 						$list_output = str_replace( '{list_name}', esc_html( $list['name'] ), $list_output );
 						$list_output = str_replace( '{list_id}', esc_html( $list['id'] ), $list_output );

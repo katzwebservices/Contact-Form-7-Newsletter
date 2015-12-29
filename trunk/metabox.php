@@ -24,7 +24,7 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 <a href="http://katz.si/4w" target="_blank"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact Logo" style="margin-top:.5em;" /></a>
 
-<?php if(self::validateApi()) { ?>
+<?php if( self::validateApi() ) { ?>
 	<div class="mail-field clear" style="padding-bottom:.75em">
 		<input type="checkbox" id="wpcf7-ctct-active" name="wpcf7-ctct[active]" value="1"<?php checked((isset($cf7_ctct['active']) && $cf7_ctct['active']==1), true); ?> />
 		<label for="wpcf7-ctct-active"><?php echo esc_html( __( 'Send form entries to Constant Contact', 'ctctcf7' ) ); ?></label>
@@ -63,18 +63,33 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 		<?php
 		$i = 0;
-		foreach($CTCT_SuperClass->listMergeVars() as $var) {
+		foreach( $CTCT_SuperClass->listMergeVars() as $var ) {
+			$tag = isset( $var['tag'] ) ? $var['tag'] : '';
 			?>
-			<div class="half-<?php if($i % 2 === 0) { echo 'left'; } else { echo 'right'; }?>" style="clear:none;">
+			<div class="half-<?php if ( $i % 2 === 0 ) {
+				echo 'left';
+			} else {
+				echo 'right';
+			} ?>" style="clear:none;">
 				<div class="mail-field">
-					<label for="wpcf7-ctct-<?php echo $var['tag']; ?>"><?php echo $var['name']; echo !empty($var['req']) ? _e('&larr; This setting is required.</strong>', 'ctctcf7') : ''; ?></label><br />
-					<input type="text" id="wpcf7-ctct-<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>" name="wpcf7-ctct[fields][<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>]" class="wide" size="70" value="<?php echo @esc_attr( isset($cf7_ctct['fields'][$var['tag']]) ? $cf7_ctct['fields'][$var['tag']] : '' ); ?>" <?php if(isset($var['placeholder'])) { echo ' placeholder="Example: '.$var['placeholder'].'"'; } ?> />
+					<label for="wpcf7-ctct-<?php echo esc_attr( $tag ); ?>"><?php echo esc_html( $var['name'] );
+						echo ! empty( $var['req'] ) ? ' <strong style="color: #a00;">'. __( '&larr; This setting is required.', 'ctctcf7' ) .'</strong>' : ''; ?></label><br/>
+					<input type="text" id="wpcf7-ctct-<?php echo esc_attr( $tag ); ?>"
+					       name="wpcf7-ctct[fields][<?php echo esc_attr( $tag ); ?>]"
+					       class="wide widefat" size="70"
+					       value="<?php
+					       $value = isset( $cf7_ctct['fields']["{$tag}"] ) ? $cf7_ctct['fields']["{$tag}"] : '';
+					       echo esc_attr( $value ); ?>" <?php if ( isset( $var['placeholder'] ) ) {
+						echo ' placeholder="Example: ' . esc_attr( $var['placeholder'] ) . '"';
+					} ?> />
 				</div>
 			</div>
 
 			<?php
-			if($i % 2 === 1) { echo '<div class="clear"></div>'; }
-			$i++;
+			if ( $i % 2 === 1 ) {
+				echo '<div class="clear"></div>';
+			}
+			$i ++;
 		} ?>
 
 		<div class="clear mail-field" style="width:50%;">
