@@ -752,7 +752,7 @@ class CTCTCF7 {
 		}
 
 		// For debug only
-		$contact['email_address'] = str_replace('@', rand(0,10000).'@', $contact['email_address'] ); // REMOVE!!!!!
+		#$contact['email_address'] = str_replace( '@', rand( 0, 10000 ) . '@', $contact['email_address'] ); // REMOVE!!!!!
 
 		$CTCT_SuperClass = new CTCT_SuperClass;
 
