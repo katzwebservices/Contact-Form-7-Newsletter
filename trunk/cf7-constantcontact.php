@@ -792,7 +792,6 @@ class CTCTCF7 {
 				$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact( $Contact, false );
 			}
 
-			error_log( print_r( $Contact, true ) );
 		} // Update existing contact
 		else {
 			$expected_response = 204;
@@ -833,8 +832,6 @@ class CTCTCF7 {
 				$ExistingContact->setLists( $list );
 			}
 
-			error_log( print_r( $ExistingContact, true ) );
-
 			if ( $ExistingContact->getLists() ) {
 				$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact( $ExistingContact->getId(), $ExistingContact, false );
 			}
@@ -845,8 +842,6 @@ class CTCTCF7 {
 		} else {
 			do_action( 'cf7_ctct_succeeded', $response, $Contact, $ExistingContact );
 		}
-
-		error_log( print_r( $response, true ) );
 
 		return $obj;
 	}
