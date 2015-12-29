@@ -12,7 +12,7 @@
 				'data' : $(this).val()
 			};
 
-			var jqxhr = $.post("<?php echo admin_url("admin-ajax.php")?>", data, function(response) {
+			var jqxhr = $.post("<?php echo admin_url("admin-ajax.php")?>", data, function( response ) {
 
 				// Build the dropdown
 				var dropdown = CTCTCF7_Build_Dropdown(response);
@@ -82,20 +82,83 @@
 		/**
 		 * When the subscribe type is changed
 		 */
-		$(document).on('ctct_change_type', function(event) {
+		$( document ).on( 'change', '.subscribe_options input.option', function( event ) {
 
-			// The subscribe type has to be hacked. In CF7 code,
-			// they don't want radio buttons specifying the type
-			// so we have to have a hidden input that holds the type
-			var type = $('input[name="subscribe_type_radio"]:checked').val();
-			$('input[name=type]').val(type);
+			var checked = $( this ).prop( 'checked' ) ? false : true;
 
-			// Only show the lists and tag code if there's a type selected.
-			$('.ctctcf7_subscribe_list, #ctctcf7-tg-tags').show();
+			$( '#wpcf7-tg-pane-ctct' ).find( '.subscribe_options input.option' ).prop( 'checked', false );
+
+			$( this ).prop( 'checked', ! checked );
+
+			ctct_cf7_change_subscribe_type();
+		});
+
+		function ctct_cf7_get_subscription_type() {
+
+			var value = $( '#wpcf7-tg-pane-ctct' ).find('.subscribe_options input.option' ).filter( ':checked' ).val();
+
+			return value;
+		}
+
+		/**
+		 * When the subscribe type is changed
+		 */
+		function ctct_cf7_change_subscribe_type( event ) {
+
+			// When hiding the values not in use,
+			// set default values for all inputs with the current value
+			// and then reset the value (to clear the shortcode generation)
+			$('*[class*=subscribe_type]').hide(0, function() {
+				$('input', $(this)).each(function() {
+					value = $(this).val();
+					if( value  ) {
+						$(this).attr('data-default', value);
+					}
+					$(this).val('').trigger('change');
+				});
+			});
+
+			var type = ctct_cf7_get_subscription_type();
+
+			if( type ) {
+
+				$( '.ctctcf7_subscribe_list, #ctctcf7-tg-tags' ).show();
+
+				// When showing the values in use,
+				// Get and set default values for all inputs
+				$( '.subscribe_type_' + type ).show( 0, function () {
+					// Get and set default values for all inputs
+					$( 'input,select', $( this ) ).each( function () {
+						if ( $( this ).val() === '' ) {
+							var dataDefault = $( this ).attr( 'data-default' );
+							if ( dataDefault ) {
+								$( this ).val( dataDefault ).trigger( 'change' );
+							}
+						}
+					} );
+				} );
+			} else {
+				// Only show the lists and tag code if there's a type selected.
+				$( '.ctctcf7_subscribe_list, #ctctcf7-tg-tags' ).hide();
+			}
+		}
+		// End change subscribe type
+
+		// Spaces = different values in CF7, so we URL encode the labels
+		//  to allow for passing more data than the poor labels are designed for.
+		$(document).on('ctct_change_type change keyup', '.urlencode:visible', function() {
+			var data_target = $( this ).attr('data-target');
+			var encoded_value = ctctcf7_url_encode( $( this ).val() );
+			$( data_target ).val( encoded_value ).trigger( 'change' );
+		});
+
+		// When lists are changed, show/hide the tag field
+		$(document).on('change', '.ctctcf7_subscribe_list', function() {
 
 			// If the lists haven't been chosen yet, hide the tag code
 			// and show the instructions message
 			var checked_lists = $('.ctctcf7_subscribe_list input').serialize();
+
 			if(checked_lists === '') {
 				$( '.control-box:visible').css( 'height', '100%' );
 				$('#ctctcf7-tg-tags div, #wpcf7-tg-pane-ctct .insert-box').hide();
@@ -106,45 +169,6 @@
 				$('#ctctcf7-tg-tags h4').hide();
 			}
 
-
-			// When hiding the values not in use,
-			// set default values for all inputs with the current value
-			// and then reset the value (to clear the shortcode generation)
-			$('*[class*=subscribe_type]').hide(0, function() {
-				$('input', $(this)).each(function() {
-					value = $(this).val();
-					if(value !== '') {
-						$(this).attr('data-default', value);
-					}
-					$(this).val('').trigger('change');
-				});
-			});
-
-			// When showing the values in use,
-			// Get and set default values for all inputs
-			$('.subscribe_type_'+type).show(0, function() {
-				// Get and set default values for all inputs
-				$('input,select', $(this)).each(function() {
-					if($(this).val() === '') {
-						var dataDefault = $(this).attr('data-default');
-						if(dataDefault) {
-							$(this).val(dataDefault).trigger('change');
-						}
-					}
-				});
-			});
-		});
-		// End change subscribe type
-
-		// Spaces = different values in CF7, so we URL encode the labels
-		//  to allow for passing more data than the poor labels are designed for.
-		$(document).on('ctct_change_type change keyup', '.urlencode:visible', function() {
-			$($(this).attr('data-target')).val(ctctcf7_url_encode($(this).val())).trigger('change');
-		});
-
-		// When lists are changed, show/hide the tag field
-		$(document).on('change', '.ctctcf7_subscribe_list', function() {
-			$(document).trigger('ctct_change_type');
 		});
 
 

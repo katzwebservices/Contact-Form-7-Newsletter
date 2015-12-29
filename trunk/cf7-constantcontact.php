@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Contact Form 7 Newsletter
-Plugin URI: http://www.katzwebservices.com
+Plugin URI: https://katz.co/plugins/contact-form-7-newsletter/
 Description: Add the power of Constant Contact to Contact Form 7
 Author: Katz Web Services, Inc.
 Author URI: http://www.katzwebservices.com
-Version: 2.1.1
+Version: 2.2
 */
 
 /*  Copyright 2015 Katz Web Services, Inc. (email: info@katzwebservices.com)
@@ -36,7 +36,14 @@ class CTCTCF7 {
 	 * The current version of the plugin.
 	 * @var string
 	 */
-	private static $version = '2.1.1';
+	private static $version = '2.2';
+
+	/**
+	 * The version of CF7 that is required
+	 * @since 2.2
+	 * @type string
+	 */
+	private static $required_cf7_version = '4.3';
 
 	function __construct() {
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
@@ -45,8 +52,8 @@ class CTCTCF7 {
 	function plugins_loaded() {
 
 		// Require Version 4.2 of CF7
-		if( ! $this->is_cf7_42_or_greater() ) {
-			add_action('admin_notices', array( $this, 'cf7_42_required_notice' ));
+		if( ! $this->is_cf7_valid() ) {
+			add_action('admin_notices', array( $this, 'cf7_version_required_notice' ));
 			return;
 		}
 
@@ -70,7 +77,10 @@ class CTCTCF7 {
 		// CF7 Processing
 		add_action( 'wpcf7_mail_sent', array( $this, 'process_submission' ));
 
-		include_once(trailingslashit(dirname( __FILE__ ))."shortcode.php");
+		/** @define "$path" "./" */
+		$path = plugin_dir_path( __FILE__ );
+		include_once( $path . "shortcode.php" );
+		include_once( $path . 'cf7-integration.php' );
 	}
 
 	/**
@@ -78,12 +88,12 @@ class CTCTCF7 {
 	 * @since 2.1
 	 * @return void
 	 */
-	public function cf7_42_required_notice() {
+	public function cf7_version_required_notice() {
 
-		if( NULL === $this->is_cf7_42_or_greater() ) {
+		if( NULL === $this->is_cf7_valid() ) {
 			$message = esc_html__('Contact Form 7 Newsletter requires Contact Form 7 to be active.', 'ctctcf7' );
 		} else {
-			$message = sprintf( esc_html__('Contact Form 7 Newsletter requires Contact Form 7 version 4.2 or greater. Please %supdate the Contact Form 7 plugin%s.', 'ctctcf7' ), '<a href="'.admin_url('update-core.php').'">', '</a>' );
+			$message = sprintf( esc_html__('Contact Form 7 Newsletter requires Contact Form 7 version %s or greater. Please %supdate the Contact Form 7 plugin%s.', 'ctctcf7' ), self::$required_cf7_version, '<a href="'.admin_url('update-core.php').'">', '</a>' );
 		}
 
 		echo '<div class="error notice is-dismissible">' . wpautop( $message ) . '</div>';
@@ -93,13 +103,13 @@ class CTCTCF7 {
 	 * @since 2.1
 	 * @return bool True: CF7 4.2 or greater is active. False: lesser version. NULL: inactive.
 	 */
-	public function is_cf7_42_or_greater() {
+	public function is_cf7_valid() {
 
 		if( ! defined('WPCF7_VERSION') ) {
 			return null;
 		}
 
-		return version_compare( WPCF7_VERSION, '4.2', '>=' );
+		return version_compare( WPCF7_VERSION, self::$required_cf7_version, '>=' );
 	}
 
 	/**
@@ -386,7 +396,7 @@ class CTCTCF7 {
 	}
 
 	static function get_includes() {
-		$dir = trailingslashit(dirname( __FILE__ ));
+		$dir = plugin_dir_path( __FILE__ );
 		if(!class_exists("CTCTUtility")) { include("{$dir}api/ctctWrapper.php"); }
 		if(!class_exists("CTCT_SuperClass")) { include("{$dir}api/ctct_cf7_superclass.php"); }
 	}
@@ -633,7 +643,7 @@ class CTCTCF7 {
 		}
 
 		// For debug only
-		# $contact['email_address'] = rand(0,10000).$contact['email_address']; // REMOVE!!!!!
+		$contact['email_address'] = str_replace('@', rand(0,10000).'@', $contact['email_address'] ); // REMOVE!!!!!
 
 		$CTCT_SuperClass = new CTCT_SuperClass;
 
@@ -648,6 +658,8 @@ class CTCTCF7 {
 			// Don't send them a welcome email
 			$contact['opt_in_source'] = 'ACTION_BY_CUSTOMER';
 		}
+
+		$response = null;
 
 		// calculate subscribed lists
 		$requested_lists = self::get_submitted_lists();
@@ -665,8 +677,11 @@ class CTCTCF7 {
 
 			$Contact->setOptInSource($contact['opt_in_source']);
 
-			$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact($Contact, false);
+			if( $Contact->getLists() ) {
+				$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact( $Contact, false );
+			}
 
+			error_log( print_r( $Contact, true ) );
 		}
 		// Update existing contact
 		else {
@@ -708,7 +723,11 @@ class CTCTCF7 {
 				$ExistingContact->setLists($list);
 			}
 
-			$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact($ExistingContact->getId(), $ExistingContact, false);
+			error_log( print_r( $ExistingContact, true ) );
+
+			if( $ExistingContact->getLists() ) {
+				$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact( $ExistingContact->getId(), $ExistingContact, false );
+			}
 		}
 
 		if( empty( $response['info'] ) || ( intval($response['info']['http_code']) !== intval($expected_response) ) ) {
@@ -716,6 +735,8 @@ class CTCTCF7 {
 		} else {
 			do_action('cf7_ctct_succeeded', $response, $Contact, $ExistingContact);
 		}
+
+		error_log( print_r( $response, true ) );
 
 		return $obj;
 	}
@@ -730,9 +751,8 @@ class CTCTCF7 {
 
 		if( $submitted !== null && is_array( $submitted ) ) {
 			foreach( $submitted as $key => $data ) {
-				if( false !== strpos( $key, 'ctct-' ) ) {
-					$lists = $data;
-					break;
+				if( false !== strpos( $key, 'ctct-' ) && ! empty( $data ) && is_array( $data ) ) {
+					$lists = array_merge( $lists, $data );
 				}
 			}
 		}
@@ -740,7 +760,7 @@ class CTCTCF7 {
 		$all_lists = CTCT_SuperClass::getAvailableLists();
 		if( is_array( $all_lists ) ) {
 			foreach( $all_lists as $list ) {
-				if( in_array( $list['id'], $lists ) ) {
+				if( in_array( $list['id'], (array)$lists ) ) {
 					$output[] = $list['link'];
 				}
 			}
@@ -749,7 +769,7 @@ class CTCTCF7 {
 		return $output;
 	}
 
-	static public function mapMergeVars($contact, &$ExistingContact) {
+	static private function mapMergeVars($contact, &$ExistingContact) {
 		if(!empty($contact['first_name'])) { $ExistingContact->setFirstName($contact['first_name']); }
 		if(!empty($contact['middle_name'])) { $ExistingContact->setMiddleName($contact['middle_name']); }
 		if(!empty($contact['last_name'])) { $ExistingContact->setLastName($contact['last_name']); }

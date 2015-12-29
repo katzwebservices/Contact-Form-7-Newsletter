@@ -181,7 +181,7 @@
 				curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type:application/atom+xml", "accept:application/atom+xml", 'Content-Length: ' . strlen($parameter)));
 			}
 
-			curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+			curl_setopt($ch, CURLOPT_FAILONERROR, 0);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
 

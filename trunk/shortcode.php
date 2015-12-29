@@ -3,19 +3,20 @@
 class CTCTCF7_Shortcode extends CTCTCF7 {
 
 	function __construct() {
+
 		self::get_includes();
 		// Add lists selection dropdown;
 		add_action( 'admin_init', array(&$this, 'init_tag_generator'), 900 );
 		add_action( 'admin_head', array(&$this, 'init_tag_script'));
-		add_action( 'init', array(&$this, 'add_shortcode'), 6 );
+		add_action( 'wpcf7_init', array(&$this, 'add_shortcode'), 6 );
 		add_filter( 'ctctcf7_push', array(&$this, 'process_submission_shortcode'), 10, 2);
 
 		add_action('wp_ajax_ctctcf7_generate_dropdowns', array(&$this, 'ajax_generate_dropdowns_from_code'));
 	}
 
 	function add_shortcode() {
-		if(function_exists('wpcf7_add_shortcode')) {
-			wpcf7_add_shortcode( array( 'ctct', 'ctct*' ), array(&$this, 'shortcode_handler'), true );
+		if ( function_exists( 'wpcf7_add_shortcode' ) ) {
+			wpcf7_add_shortcode( array( 'ctct', 'ctct*' ), array( $this, 'shortcode_handler' ), true );
 		}
 	}
 
@@ -131,6 +132,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 	}
 
 	function shortcode_handler( $tag ) {
+
 		$tag = new WPCF7_Shortcode( $tag );
 
 		if ( empty( $tag->name ) )
@@ -274,18 +276,23 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 	 * Create the Constant Contact Lists tag in the form dropdown menu
 	 */
 	function init_tag_generator() {
-		if ( ! function_exists( 'wpcf7_add_tag_generator' ) )
-			return;
 
-		wpcf7_add_tag_generator( 'ctct', __( 'Constant Contact Lists', 'ctctcf7' ),
-			'wpcf7-tg-pane-ctct', array(&$this, 'tag_generator' ));
+		if ( ! class_exists( 'WPCF7_TagGenerator' ) ) {
+			return;
+		}
+
+		WPCF7_TagGenerator::get_instance()->add( 'ctct', __( 'Constant Contact Lists', 'ctctcf7' ), array( $this, 'tag_generator' ), array(
+				'id' => 'wpcf7-tg-pane-ctct',
+				'title' => __( 'Constant Contact Lists', 'ctctcf7' ),
+		) );
 	}
 
 	/**
 	 * Handle JS for the Constant Contact tab as well as the Constant Contact Lists button
 	 */
 	function init_tag_script() {
-		$dir = trailingslashit(dirname( __FILE__ ));
+		/** @define "$dir" "./" */
+		$dir = plugin_dir_path( __FILE__ );
 		include_once $dir . 'shortcode-js.php';
 	}
 
@@ -296,8 +303,9 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		return '<small class="alignright"><a href="'. esc_url( add_query_arg( array('cache' => rand(1,20000)) ) ) . '">'. esc_html__('Refresh Lists', 'ctctcf7') . '</a></small>';
 	}
 
-	function tag_generator() {
-		$dir = trailingslashit(dirname( __FILE__ ));
+	function tag_generator( $args ) {
+		/** @define "$dir" "./" */
+		$dir = plugin_dir_path( __FILE__ );
 		include_once $dir . 'tag-generator.php';
 	}
 

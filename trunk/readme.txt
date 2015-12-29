@@ -84,6 +84,8 @@ This will replace existing lists with the selected lists from the form submissio
 
 == Changelog ==
 
+* Fixed: Removed `subscribe_type_radio` class because CF7 now allows for radio inputs to set the field type
+
 = 2.1 and 2.1.1 (June 11, 2015) =
 * **Requires Contact Form 7 4.2** - please update your CF7 plugin
     - Updated interface to look good with CF7 4.2
