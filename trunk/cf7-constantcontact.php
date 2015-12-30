@@ -83,7 +83,6 @@ class CTCTCF7 {
 		/** @define "$path" "./" */
 		$path = plugin_dir_path( __FILE__ );
 		include_once( $path . "shortcode.php" );
-		include_once( $path . 'cf7-integration.php' );
 	}
 
 	/**
