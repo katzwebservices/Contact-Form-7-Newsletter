@@ -108,10 +108,8 @@
 			</div>
 		</form>
 
-		<div class="insert-box hidden" style="height: 150px; padding-left: 15px; padding-right: 15px;">
-			<div class="tg-tag clear"><?php echo __( "Insert this tag into the Form. There should only be one of these tags per form.", 'ctctcf7' ); ?><br /><input type="text" name="ctct" class="tag code" readonly="readonly" onfocus="this.select()" /></div>
-
-			<div class="tg-mail-tag clear"><?php echo esc_html( __( "and add this code to the Mail tab 'Message Body' field.", 'ctctcf7' ) ); ?><br /><span class="arrow">&#11015;</span>&nbsp;<input type="text" class="mail-tag code" readonly="readonly" onfocus="this.select()" /></div>
+		<div class="insert-box hidden" style="padding-left: 15px; padding-right: 15px;">
+			<div class="tg-tag clear"><?php echo __( "Insert this tag into the Form. There should only be one of these tags per form.", 'ctctcf7' ); ?><br /><input type="text" name="ctct" class="tag code" readonly="readonly" onfocus="this.select();" onmouseup="return false;" /></div>
 
 			<div class="submitbox">
 				<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'contact-form-7' ) ); ?>" />

@@ -85,6 +85,7 @@ This will replace existing lists with the selected lists from the form submissio
 == Changelog ==
 
 * Fixed: Removed `subscribe_type_radio` class because CF7 now allows for radio inputs to set the field type
+* Fixed: Removed mail-tag instruction from tag generator; it was confusing people
 
 = 2.1 and 2.1.1 (June 11, 2015) =
 * **Requires Contact Form 7 4.2** - please update your CF7 plugin
