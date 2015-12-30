@@ -11,17 +11,6 @@ $cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
 $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 ?>
-<script>
-	jQuery(document).ready(function($) {
-		$('.ctctcf7-tooltip').tooltip({
-			content: function () {
-				return $(this).prop('title');
-			}
-		});
-	});
-</script>
-<div class="ctctcf7-tooltip" title="<h6><?php _e('Backward Compatibility', 'ctctcf7'); ?></h6><p><?php _e('Starting with Version 2.0 of Contact Form 7 Newsletter plugin, the lists a form sends data to should be defined by generating a tag above &uarr;</p><p>For backward compatibility, <strong>if you don\'t define any forms using a tag above</strong>, your form will continue to send contact data to these lists:', 'ctctcf7'); ?></p><p><strong><?php esc_attr_e("For full instructions, go to the Contact > Constant Contact page and click 'View integration instructions'.", 'ctctcf7'); ?></strong></p>"><?php _e('Where are my lists?', 'ctctcf7'); ?></div>
-
 <a href="http://katz.si/4w" target="_blank"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact Logo" style="margin-top:.5em;" /></a>
 
 <?php if( self::validateApi() ) { ?>
