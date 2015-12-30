@@ -797,6 +797,7 @@ class CTCTCF7 {
 
 			$Contact->setOptInSource( $contact['opt_in_source'] );
 
+			// Only create contact if there were requested lists
 			if ( $Contact->getLists() ) {
 				$response = $CTCT_SuperClass->CC_ContactsCollection()->createContact( $Contact, false );
 			}
@@ -841,6 +842,7 @@ class CTCTCF7 {
 				$ExistingContact->setLists( $list );
 			}
 
+			// Only update contact if there were requested lists
 			if ( $ExistingContact->getLists() ) {
 				$response = $CTCT_SuperClass->CC_ContactsCollection()->updateContact( $ExistingContact->getId(), $ExistingContact, false );
 			}
