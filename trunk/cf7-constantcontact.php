@@ -461,7 +461,7 @@ class CTCTCF7 {
 		return $return['info']['http_code'] === 200 && empty( $return['error'] );
 	}
 
-	static function get_password() {
+	public static function get_password() {
 		if ( ! empty( $_POST['ctct_cf7'] ) ) {
 			return $_POST['ctct_cf7']['password'];
 		}
@@ -471,7 +471,7 @@ class CTCTCF7 {
 		return $value;
 	}
 
-	static function get_username() {
+	public static function get_username() {
 		if ( ! empty( $_POST['ctct_cf7'] ) ) {
 			return $_POST['ctct_cf7']['username'];
 		}
@@ -694,9 +694,9 @@ class CTCTCF7 {
 	 *
 	 * @param $args
 	 */
-	public function save_form_settings($args) {
-		$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
-		update_option( 'cf7_ctct_'.$cf_id, $_POST['wpcf7-ctct'] );
+	public function save_form_settings( $args ) {
+		$cf_id = method_exists( $args, 'id' ) ? $args->id() : $args->id;
+		update_option( 'cf7_ctct_' . $cf_id, $_POST['wpcf7-ctct'] );
 	}
 
 	/**
@@ -707,7 +707,17 @@ class CTCTCF7 {
 	}
 
 
-	public function process_submission($obj) {
+	/**
+	 * Handle the form submission
+	 *
+	 * If no CTCT configurations exist or the `CTCT_SuperClass` class doesn't load,
+	 * or there's no mapped `email_address` value, then nothing happens.
+	 *
+	 * @param WPCF7_ContactForm $obj
+	 *
+	 * @return WPCF7_ContactForm
+	 */
+	public function process_submission( $obj ) {
 
 		$cf_id = method_exists( $obj, 'id' ) ? $obj->id() : $obj->id;
 
@@ -874,6 +884,10 @@ class CTCTCF7 {
 		return $output;
 	}
 
+	/**
+	 * @param array $contact Submitted contact details
+	 * @param CTCTContact $ExistingContact Existing contact object
+	 */
 	static private function mapMergeVars( $contact, &$ExistingContact ) {
 		if ( ! empty( $contact['first_name'] ) ) {
 			$ExistingContact->setFirstName( $contact['first_name'] );
