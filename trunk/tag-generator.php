@@ -1,7 +1,7 @@
 <div class="control-box" style="height: 100%">
 	<?php
 
-	if(!self::validateApi()) {
+	if( ! self::validateApi() ) {
 		?>
 		<div id="wpcf7-tg-pane-ctct">
 			<form action="">
@@ -15,7 +15,7 @@
 		<form action="#">
 			<style>
 				#contact-form-editor-tabs #ctctcf7-tab a {
-					background: url('<?php echo plugins_url('favicon.png',__FILE__); ?>') 5px center no-repeat;
+					background: url('<?php echo plugins_url('favicon.png', __FILE__ ); ?>') 5px center no-repeat;
 					padding-left: 25px;
 				}
 				.js .postbox .tg-pane h3 {
@@ -35,14 +35,13 @@
 			<h4><?php _e('After inserting this Tag, you will need to define the Integration Fields in the "Constant Contact" tab.', "wpcf7" ); ?></h4>
 			<div>
 				<input type="hidden" name="name" class="tg-name" value="" />
-				<input class="option" name="type" type="hidden" />
 			</div>
 			<h3><?php _e('How should users subscribe?', 'ctctcf7'); ?></h3>
-			<ul>
-				<li><label><input id="subscribe_type_hidden" type="radio" value="hidden" name="subscribe_type_radio" class="option" onchange="jQuery(document).trigger('ctct_change_type');" /> <?php _e('Hidden (subscribe without asking)', 'ctctcf7'); ?></label></li>
-				<li><label><input id="subscribe_type_single" type="radio" value="single" name="subscribe_type_radio" class="option" onchange="jQuery(document).trigger('ctct_change_type');" /> <?php _e('Opt-in checkbox', 'ctctcf7'); ?></label></li>
-				<li><label><input id="subscribe_type_dropdown" type="radio" value="dropdown" name="subscribe_type_radio" class="option" onchange="jQuery(document).trigger('ctct_change_type');" /> <?php _e('Drop-down select lists', 'ctctcf7'); ?></label></li>
-				<li><label><input id="subscribe_type_checkboxes" type="radio" value="checkboxes" name="subscribe_type_radio" class="option" onchange="jQuery(document).trigger('ctct_change_type');" /> <?php _e('Checkboxes select lists', 'ctctcf7'); ?></label></li>
+			<ul class="subscribe_options">
+				<li><label><input id="subscribe_type_hidden" type="checkbox" value="hidden" name="type:hidden" class="radio option" /> <?php esc_html_e('Hidden (subscribe without asking)', 'ctctcf7'); ?></label></li>
+				<li><label><input id="subscribe_type_single" type="checkbox" value="single" name="type:single" class="radio option" /> <?php esc_html_e('Opt-in checkbox', 'ctctcf7'); ?></label></li>
+				<li><label><input id="subscribe_type_dropdown" type="checkbox" value="dropdown" name="type:dropdown" class="radio option" /> <?php esc_html_e('Drop-down select lists', 'ctctcf7'); ?></label></li>
+				<li><label><input id="subscribe_type_checkboxes" type="checkbox" value="checkboxes" name="type:checkboxes" class="radio option" /> <?php esc_html_e('Checkboxes select lists', 'ctctcf7'); ?></label></li>
 			</ul>
 
 			<div class="subscribe_type_hidden" style="display:none;">
@@ -72,15 +71,34 @@
 					<?php
 					$lists = CTCT_SuperClass::getAvailableLists();
 
+					$CTCT_SuperClass = new CTCT_SuperClass;
+					$cf7_ctct_defaults = array();
+
+					$cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
+
+					$cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
+					$cf7_ctct_lists = isset( $cf7_ctct ) && !empty( $cf7_ctct['lists'] ) ? (array)$cf7_ctct['lists'] : array();
+
+					$output = '';
+					$template = '<li><label><input type="checkbox" class="option" name="\'{list_name}::#{list_id}\'" {checked} /> {label}</label></li>';
+
 					foreach($lists as $list) {
-						echo '
-						<li>
-							<label>
-								<input type="checkbox" class="option" name="\''.str_replace("'", '&amp;#39;', $list['name']).'::#'.$list['id'].'\'" value="'.$list['link'].'" '.@checked((is_array($list) && in_array($list['link'], (array)$cf7_ctct['lists'])), true, false).' />
-							'.$list['name'].'
-							</label>
-						</li>';
+						$list_output = $template;
+
+						$value = $list['link'];
+						$label = esc_html( $list['name'] );
+
+						$checked = checked( ( is_array( $list ) && in_array( $list['link'], $cf7_ctct_lists ) ), true, false );
+						#$list_name = str_replace( "'", '&amp;#39;', $list['name'] ).'::#'.$list['id'];
+						$list_output = str_replace( '{list_name}', esc_html( $list['name'] ), $list_output );
+						$list_output = str_replace( '{list_id}', esc_html( $list['id'] ), $list_output );
+						$list_output = str_replace( '{value}', $value, $list_output );
+						$list_output = str_replace( '{checked}', $checked, $list_output );
+						$list_output = str_replace( '{label}', $label, $list_output );
+
+						$output .= $list_output;
 					}
+					echo $output;
 					?>
 				</ul>
 				<div class="clear"></div>
@@ -90,10 +108,8 @@
 			</div>
 		</form>
 
-		<div class="insert-box hidden" style="height: 150px; padding-left: 15px; padding-right: 15px;">
-			<div class="tg-tag clear"><?php echo __( "Insert this tag into the Form. There should only be one of these tags per form.", 'ctctcf7' ); ?><br /><input type="text" name="ctct" class="tag code" readonly="readonly" onfocus="this.select()" /></div>
-
-			<div class="tg-mail-tag clear"><?php echo esc_html( __( "and add this code to the Mail tab.", 'ctctcf7' ) ); ?><br /><span class="arrow">&#11015;</span>&nbsp;<input type="text" class="mail-tag code" readonly="readonly" onfocus="this.select()" /></div>
+		<div class="insert-box hidden" style="padding-left: 15px; padding-right: 15px;">
+			<div class="tg-tag clear"><?php echo __( "Insert this tag into the Form. There should only be one of these tags per form.", 'ctctcf7' ); ?><br /><input type="text" name="ctct" class="tag code" readonly="readonly" onfocus="this.select();" onmouseup="return false;" /></div>
 
 			<div class="submitbox">
 				<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'contact-form-7' ) ); ?>" />

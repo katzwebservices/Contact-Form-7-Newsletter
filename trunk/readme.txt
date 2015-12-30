@@ -3,7 +3,7 @@ Contributors: katzwebservices, katzwebdesign
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zackkatz%40gmail%2ecom&item_name=Constant%20Form%207%20Constant%20Contact%20Module
 Tags: Contact Form 7, ContactForm7, Constant Contact, Contact Form, Newsletter, Opt In, Email Marketing, form, signup, email newsletter form, newsletter form, newsletter signup, email marketing
 Requires at least: 3.2
-Tested up to: 4.2.2
+Tested up to: 4.4
 Stable tag: trunk
 License: GPLv2 or later
 
@@ -33,7 +33,7 @@ You can configure integrations on a per-form basis. Different Contact Form 7 for
 * Sync form fields to Constant Contact fields, including your Custom Fields
 * Add a newsletter opt-in checkbox to your form (see <a href="http://wordpress.org/extend/plugins/contact-form-7-newsletter/faq/">plugin FAQs</a> to learn how)
 
-#### This plugin requires Contact Form 7 4.2 or newer
+#### This plugin requires Contact Form 7 4.3 or newer
 
 == Installation ==
 
@@ -83,6 +83,15 @@ This will replace existing lists with the selected lists from the form submissio
 4. When a form is connected to Constant Contact, you will see this icon
 
 == Changelog ==
+
+= 2.2 (December 29, 2015) =
+* Updated: The plugin now requires Contact Form 7 4.3 or newer
+* Fixed: Compatibility with Contact Form 4.3
+* Fixed: Only create or update a contact if newsletter lists were found in the form submission
+* Fixed: Removed `subscribe_type_radio` class because CF7 now allows for radio inputs to set the field type
+* Fixed: Generated tags didn't select properly on focus
+* Fixed: Support for installation outside the `wp-content/plugins/` directory
+* Fixed: Removed mail-tag instruction from tag generator; it was confusing people
 
 = 2.1 and 2.1.1 (June 11, 2015) =
 * **Requires Contact Form 7 4.2** - please update your CF7 plugin

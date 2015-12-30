@@ -11,20 +11,9 @@ $cf_id = method_exists( $args , 'id' ) ? $args->id() : $args->id;
 $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 ?>
-<script>
-	jQuery(document).ready(function($) {
-		$('.ctctcf7-tooltip').tooltip({
-			content: function () {
-				return $(this).prop('title');
-			}
-		});
-	});
-</script>
-<div class="ctctcf7-tooltip" title="<h6><?php _e('Backward Compatibility', 'ctctcf7'); ?></h6><p><?php _e('Starting with Version 2.0 of Contact Form 7 Newsletter plugin, the lists a form sends data to should be defined by generating a tag above &uarr;</p><p>For backward compatibility, <strong>if you don\'t define any forms using a tag above</strong>, your form will continue to send contact data to these lists:', 'ctctcf7'); ?></p><p><strong><?php esc_attr_e("For full instructions, go to the Contact > Constant Contact page and click 'View integration instructions'.", 'ctctcf7'); ?></strong></p>"><?php _e('Where are my lists?', 'ctctcf7'); ?></div>
-
 <a href="http://katz.si/4w" target="_blank"><img src="<?php echo plugins_url('CTCT_horizontal_logo.png', __FILE__); ?>" width="281" height="47" alt="Constant Contact Logo" style="margin-top:.5em;" /></a>
 
-<?php if(self::validateApi()) { ?>
+<?php if( self::validateApi() ) { ?>
 	<div class="mail-field clear" style="padding-bottom:.75em">
 		<input type="checkbox" id="wpcf7-ctct-active" name="wpcf7-ctct[active]" value="1"<?php checked((isset($cf7_ctct['active']) && $cf7_ctct['active']==1), true); ?> />
 		<label for="wpcf7-ctct-active"><?php echo esc_html( __( 'Send form entries to Constant Contact', 'ctctcf7' ) ); ?></label>
@@ -53,9 +42,9 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 		<div class="clear"></div>
 		<?php
 
-		$instructions = __('<h2>Integration Fields</h2>', 'ctctcf7');
+		$instructions = '<h3>'.esc_html__('Integration Fields', 'ctctcf7').'</h3>';
 		$instructions .= '<p class="howto">';
-		$instructions .= __('For each of the Integration Fields below, select the value you would like sent to Constant Contact.', 'ctctcf7');
+		$instructions .= esc_html__('For each of the Integration Fields below, select the value you would like sent to Constant Contact.', 'ctctcf7');
 		$instructions .= '</p>';
 
 		echo $instructions;
@@ -63,18 +52,33 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 
 		<?php
 		$i = 0;
-		foreach($CTCT_SuperClass->listMergeVars() as $var) {
+		foreach( $CTCT_SuperClass->listMergeVars() as $var ) {
+			$tag = isset( $var['tag'] ) ? $var['tag'] : '';
 			?>
-			<div class="half-<?php if($i % 2 === 0) { echo 'left'; } else { echo 'right'; }?>" style="clear:none;">
+			<div class="half-<?php if ( $i % 2 === 0 ) {
+				echo 'left';
+			} else {
+				echo 'right';
+			} ?>" style="clear:none;">
 				<div class="mail-field">
-					<label for="wpcf7-ctct-<?php echo $var['tag']; ?>"><?php echo $var['name']; echo !empty($var['req']) ? _e('&larr; This setting is required.</strong>', 'ctctcf7') : ''; ?></label><br />
-					<input type="text" id="wpcf7-ctct-<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>" name="wpcf7-ctct[fields][<?php echo isset($var['tag']) ? $var['tag'] : ''; ?>]" class="wide" size="70" value="<?php echo @esc_attr( isset($cf7_ctct['fields'][$var['tag']]) ? $cf7_ctct['fields'][$var['tag']] : '' ); ?>" <?php if(isset($var['placeholder'])) { echo ' placeholder="Example: '.$var['placeholder'].'"'; } ?> />
+					<label for="wpcf7-ctct-<?php echo esc_attr( $tag ); ?>"><?php echo esc_html( $var['name'] );
+						echo ! empty( $var['req'] ) ? ' <strong style="color: #a00;">'. __( '&larr; This setting is required.', 'ctctcf7' ) .'</strong>' : ''; ?></label><br/>
+					<input type="text" id="wpcf7-ctct-<?php echo esc_attr( $tag ); ?>"
+					       name="wpcf7-ctct[fields][<?php echo esc_attr( $tag ); ?>]"
+					       class="wide widefat" size="70"
+					       value="<?php
+					       $value = isset( $cf7_ctct['fields']["{$tag}"] ) ? $cf7_ctct['fields']["{$tag}"] : '';
+					       echo esc_attr( $value ); ?>" <?php if ( isset( $var['placeholder'] ) ) {
+						echo ' placeholder="Example: ' . esc_attr( $var['placeholder'] ) . '"';
+					} ?> />
 				</div>
 			</div>
 
 			<?php
-			if($i % 2 === 1) { echo '<div class="clear"></div>'; }
-			$i++;
+			if ( $i % 2 === 1 ) {
+				echo '<div class="clear"></div>';
+			}
+			$i ++;
 		} ?>
 
 		<div class="clear mail-field" style="width:50%;">

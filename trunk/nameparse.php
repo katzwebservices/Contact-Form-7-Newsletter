@@ -20,236 +20,241 @@ Bugs:   If one of the words in the middle name is Ben (or St., for that matter),
 
 */
 
-function    cf7_newsletter_norm_str($string) {
-    return  trim(strtolower(
-        str_replace('.','',$string)));
-    }
+function cf7_newsletter_norm_str( $string ) {
+	return trim( strtolower( str_replace( '.', '', $string ) ) );
+}
 
-function    cf7_newsletter_in_array_norm($needle,$haystack) {
-    return  in_array(cf7_newsletter_norm_str($needle),$haystack);
-    }
+function cf7_newsletter_in_array_norm( $needle, $haystack ) {
+	return in_array( cf7_newsletter_norm_str( $needle ), $haystack );
+}
 
-function    cf7_newsletter_parse_name($fullname) {
-    $titles         =   array('dr','miss','mr','mrs','ms','judge');
-    $prefices       =   array('ben','bin','da','dal','de','del','der','de','e',
-                            'la','le','san','st','ste','van','vel','von');
-    $suffices       =   array('esq','esquire','jr','sr','2','ii','iii','iv');
+function cf7_newsletter_parse_name( $fullname ) {
+	$titles   = array( 'dr', 'miss', 'mr', 'mrs', 'ms', 'judge' );
+	$prefices = array(
+		'ben',
+		'bin',
+		'da',
+		'dal',
+		'de',
+		'del',
+		'der',
+		'de',
+		'e',
+		'la',
+		'le',
+		'san',
+		'st',
+		'ste',
+		'van',
+		'vel',
+		'von',
+	);
+	$suffices = array( 'esq', 'esquire', 'jr', 'sr', '2', 'ii', 'iii', 'iv' );
 
-    $pieces         =   explode(',',preg_replace('/\s+/',' ',trim($fullname)));
-    $n_pieces       =   count($pieces);
-    $out            =   array();
-    switch($n_pieces) {
-        case    1:  // array(title first middles last suffix)
-            $subp   =   explode(' ',trim($pieces[0]));
-            $n_subp =   count($subp);
-            for($i = 0; $i < $n_subp; $i++) {
-                $curr               =   trim(@$subp[$i]);
-                $next               =   trim(@$subp[$i+1]);
+	$pieces   = explode( ',', preg_replace( '/\s+/', ' ', trim( $fullname ) ) );
+	$n_pieces = count( $pieces );
+	$out      = array();
+	switch ( $n_pieces ) {
+		case    1:  // array(title first middles last suffix)
+			$subp   = explode( ' ', trim( $pieces[0] ) );
+			$n_subp = count( $subp );
+			for ( $i = 0; $i < $n_subp; $i ++ ) {
+				$curr = trim( @$subp[ $i ] );
+				$next = trim( @$subp[ $i + 1 ] );
 
-                if($i == 0 && cf7_newsletter_in_array_norm($curr,$titles)) {
-                    $out['title']   =   $curr;
-                    continue;
-                    }
+				if ( $i == 0 && cf7_newsletter_in_array_norm( $curr, $titles ) ) {
+					$out['title'] = $curr;
+					continue;
+				}
 
-                if(!isset($out['first'])) {
-                    $out['first']   =   $curr;
-                    continue;
-                    }
+				if ( ! isset( $out['first'] ) ) {
+					$out['first'] = $curr;
+					continue;
+				}
 
-                if($i == $n_subp-2 && $next && cf7_newsletter_in_array_norm($next,$suffices)) {
-                    if(isset($out['last'])) {
-                        $out['last']    .=  " $curr";
-                        }
-                    else {
-                        $out['last']    =   $curr;
-                        }
-                    $out['suffix']      =   $next;
-                    break;
-                    }
+				if ( $i == $n_subp - 2 && $next && cf7_newsletter_in_array_norm( $next, $suffices ) ) {
+					if ( isset( $out['last'] ) ) {
+						$out['last'] .= " $curr";
+					} else {
+						$out['last'] = $curr;
+					}
+					$out['suffix'] = $next;
+					break;
+				}
 
-                if($i == $n_subp-1) {
-                    if(isset($out['last'])) {
-                        $out['last']    .=  " $curr";
-                        }
-                    else {
-                        $out['last']    =   $curr;
-                        }
-                    continue;
-                    }
+				if ( $i == $n_subp - 1 ) {
+					if ( isset( $out['last'] ) ) {
+						$out['last'] .= " $curr";
+					} else {
+						$out['last'] = $curr;
+					}
+					continue;
+				}
 
-                if(cf7_newsletter_in_array_norm($curr,$prefices)) {
-                    if($out['last']) {
-                        $out['last']    .=  " $curr";
-                        }
-                    else {
-                        $out['last']    =   $curr;
-                        }
-                    continue;
-                    }
+				if ( cf7_newsletter_in_array_norm( $curr, $prefices ) ) {
+					if ( $out['last'] ) {
+						$out['last'] .= " $curr";
+					} else {
+						$out['last'] = $curr;
+					}
+					continue;
+				}
 
-                if($next == 'y' || $next == 'Y') {
-                    if($out['last']) {
-                        $out['last']    .=  " $curr";
-                        }
-                    else {
-                        $out['last']    =   $curr;
-                        }
-                    continue;
-                    }
+				if ( $next == 'y' || $next == 'Y' ) {
+					if ( $out['last'] ) {
+						$out['last'] .= " $curr";
+					} else {
+						$out['last'] = $curr;
+					}
+					continue;
+				}
 
-                if(isset($out['last'])) {
-                    $out['last']    .=  " $curr";
-                    continue;
-                    }
+				if ( isset( $out['last'] ) ) {
+					$out['last'] .= " $curr";
+					continue;
+				}
 
-                if(isset($out['middle'])) {
-                    $out['middle']      .=  " $curr";
-                    }
-                else {
-                    $out['middle']      =   $curr;
-                    }
-                }
-            break;
-        case    2:
-                switch(cf7_newsletter_in_array_norm($pieces[1],$suffices)) {
-                    case    TRUE: // array(title first middles last,suffix)
-                        $subp   =   explode(' ',trim($pieces[0]));
-                        $n_subp =   count($subp);
-                        for($i = 0; $i < $n_subp; $i++) {
-                            $curr               =   trim($subp[$i]);
-                            $next               =   trim($subp[$i+1]);
+				if ( isset( $out['middle'] ) ) {
+					$out['middle'] .= " $curr";
+				} else {
+					$out['middle'] = $curr;
+				}
+			}
+			break;
+		case    2:
+			switch ( cf7_newsletter_in_array_norm( $pieces[1], $suffices ) ) {
+				case    true: // array(title first middles last,suffix)
+					$subp   = explode( ' ', trim( $pieces[0] ) );
+					$n_subp = count( $subp );
+					for ( $i = 0; $i < $n_subp; $i ++ ) {
+						$curr = trim( $subp[ $i ] );
+						$next = trim( $subp[ $i + 1 ] );
 
-                            if($i == 0 && cf7_newsletter_in_array_norm($curr,$titles)) {
-                                $out['title']   =   $curr;
-                                continue;
-                                }
+						if ( $i == 0 && cf7_newsletter_in_array_norm( $curr, $titles ) ) {
+							$out['title'] = $curr;
+							continue;
+						}
 
-                            if(!isset($out['first'])) {
-                                $out['first']   =   $curr;
-                                continue;
-                                }
+						if ( ! isset( $out['first'] ) ) {
+							$out['first'] = $curr;
+							continue;
+						}
 
-                            if($i == $n_subp-1) {
-                                if(isset($out['last'])) {
-                                    $out['last']    .=  " $curr";
-                                    }
-                                else {
-                                    $out['last']    =   $curr;
-                                    }
-                                continue;
-                                }
+						if ( $i == $n_subp - 1 ) {
+							if ( isset( $out['last'] ) ) {
+								$out['last'] .= " $curr";
+							} else {
+								$out['last'] = $curr;
+							}
+							continue;
+						}
 
-                            if(cf7_newsletter_in_array_norm($curr,$prefices)) {
-                                if(isset($out['last'])) {
-                                    $out['last']    .=  " $curr";
-                                    }
-                                else {
-                                    $out['last']    =   $curr;
-                                    }
-                                continue;
-                                }
+						if ( cf7_newsletter_in_array_norm( $curr, $prefices ) ) {
+							if ( isset( $out['last'] ) ) {
+								$out['last'] .= " $curr";
+							} else {
+								$out['last'] = $curr;
+							}
+							continue;
+						}
 
-                            if($next == 'y' || $next == 'Y') {
-                                if(isset($out['last'])) {
-                                    $out['last']    .=  " $curr";
-                                    }
-                                else {
-                                    $out['last']    =   $curr;
-                                    }
-                                continue;
-                                }
+						if ( $next == 'y' || $next == 'Y' ) {
+							if ( isset( $out['last'] ) ) {
+								$out['last'] .= " $curr";
+							} else {
+								$out['last'] = $curr;
+							}
+							continue;
+						}
 
-                            if(isset($out['last'])) {
-                                $out['last']    .=  " $curr";
-                                continue;
-                                }
+						if ( isset( $out['last'] ) ) {
+							$out['last'] .= " $curr";
+							continue;
+						}
 
-                            if(isset($out['middle'])) {
-                                $out['middle']      .=  " $curr";
-                                }
-                            else {
-                                $out['middle']      =   $curr;
-                                }
-                            }
-                        $out['suffix']  =   trim($pieces[1]);
-                        break;
-                    case    FALSE: // array(last,title first middles suffix)
-                        $subp   =   explode(' ',trim($pieces[1]));
-                        $n_subp =   count($subp);
-                        for($i = 0; $i < $n_subp; $i++) {
-                            $curr               =   trim($subp[$i]);
-                            $next               =   trim($subp[$i+1]);
+						if ( isset( $out['middle'] ) ) {
+							$out['middle'] .= " $curr";
+						} else {
+							$out['middle'] = $curr;
+						}
+					}
+					$out['suffix'] = trim( $pieces[1] );
+					break;
+				case    false: // array(last,title first middles suffix)
+					$subp   = explode( ' ', trim( $pieces[1] ) );
+					$n_subp = count( $subp );
+					for ( $i = 0; $i < $n_subp; $i ++ ) {
+						$curr = trim( $subp[ $i ] );
+						$next = trim( $subp[ $i + 1 ] );
 
-                            if($i == 0 && cf7_newsletter_in_array_norm($curr,$titles)) {
-                                $out['title']   =   $curr;
-                                continue;
-                                }
+						if ( $i == 0 && cf7_newsletter_in_array_norm( $curr, $titles ) ) {
+							$out['title'] = $curr;
+							continue;
+						}
 
-                            if(!isset($out['first'])) {
-                                $out['first']   =   $curr;
-                                continue;
-                                }
+						if ( ! isset( $out['first'] ) ) {
+							$out['first'] = $curr;
+							continue;
+						}
 
-                        if($i == $n_subp-2 && $next &&
-                            cf7_newsletter_in_array_norm($next,$suffices)) {
-                            if(isset($out['middle'])) {
-                                $out['middle']  .=  " $curr";
-                                }
-                            else {
-                                $out['middle']  =   $curr;
-                                }
-                            $out['suffix']      =   $next;
-                            break;
-                            }
+						if ( $i == $n_subp - 2 && $next &&
+						     cf7_newsletter_in_array_norm( $next, $suffices )
+						) {
+							if ( isset( $out['middle'] ) ) {
+								$out['middle'] .= " $curr";
+							} else {
+								$out['middle'] = $curr;
+							}
+							$out['suffix'] = $next;
+							break;
+						}
 
-                        if($i == $n_subp-1 && cf7_newsletter_in_array_norm($curr,$suffices)) {
-                            $out['suffix']      =   $curr;
-                            continue;
-                            }
+						if ( $i == $n_subp - 1 && cf7_newsletter_in_array_norm( $curr, $suffices ) ) {
+							$out['suffix'] = $curr;
+							continue;
+						}
 
-                        if(isset($out['middle'])) {
-                            $out['middle']      .=  " $curr";
-                            }
-                        else {
-                            $out['middle']      =   $curr;
-                            }
-                        }
-                        $out['last']    =   $pieces[0];
-                        break;
-                    }
-            unset($pieces);
-            break;
-        case    3:  // array(last,title first middles,suffix)
-            $subp   =   explode(' ',trim($pieces[1]));
-            $n_subp =   count($subp);
-            for($i = 0; $i < $n_subp; $i++) {
-                $curr               =   trim($subp[$i]);
-                $next               =   trim($subp[$i+1]);
-                if($i == 0 && cf7_newsletter_in_array_norm($curr,$titles)) {
-                    $out['title']   =   $curr;
-                    continue;
-                    }
+						if ( isset( $out['middle'] ) ) {
+							$out['middle'] .= " $curr";
+						} else {
+							$out['middle'] = $curr;
+						}
+					}
+					$out['last'] = $pieces[0];
+					break;
+			}
+			unset( $pieces );
+			break;
+		case    3:  // array(last,title first middles,suffix)
+			$subp   = explode( ' ', trim( $pieces[1] ) );
+			$n_subp = count( $subp );
+			for ( $i = 0; $i < $n_subp; $i ++ ) {
+				$curr = trim( $subp[ $i ] );
+				$next = trim( $subp[ $i + 1 ] );
+				if ( $i == 0 && cf7_newsletter_in_array_norm( $curr, $titles ) ) {
+					$out['title'] = $curr;
+					continue;
+				}
 
-                if(!isset($out['first'])) {
-                    $out['first']   =   $curr;
-                    continue;
-                    }
+				if ( ! isset( $out['first'] ) ) {
+					$out['first'] = $curr;
+					continue;
+				}
 
-                if(isset($out['middle'])) {
-                    $out['middle']      .=  " $curr";
-                    }
-                else {
-                    $out['middle']      =   $curr;
-                    }
-                }
+				if ( isset( $out['middle'] ) ) {
+					$out['middle'] .= " $curr";
+				} else {
+					$out['middle'] = $curr;
+				}
+			}
 
-            $out['last']                =   trim($pieces[0]);
-            $out['suffix']              =   trim($pieces[2]);
-            break;
-        default:    // unparseable
-            unset($pieces);
-            break;
-        }
+			$out['last']   = trim( $pieces[0] );
+			$out['suffix'] = trim( $pieces[2] );
+			break;
+		default:    // unparseable
+			unset( $pieces );
+			break;
+	}
 
-    return $out;
-    }
+	return $out;
+}
