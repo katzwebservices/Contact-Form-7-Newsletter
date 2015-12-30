@@ -42,9 +42,9 @@ $cf7_ctct = get_option( 'cf7_ctct_'. $cf_id, $cf7_ctct_defaults );
 		<div class="clear"></div>
 		<?php
 
-		$instructions = __('<h2>Integration Fields</h2>', 'ctctcf7');
+		$instructions = '<h3>'.esc_html__('Integration Fields', 'ctctcf7').'</h3>';
 		$instructions .= '<p class="howto">';
-		$instructions .= __('For each of the Integration Fields below, select the value you would like sent to Constant Contact.', 'ctctcf7');
+		$instructions .= esc_html__('For each of the Integration Fields below, select the value you would like sent to Constant Contact.', 'ctctcf7');
 		$instructions .= '</p>';
 
 		echo $instructions;
