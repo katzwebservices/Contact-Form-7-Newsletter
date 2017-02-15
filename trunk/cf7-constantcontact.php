@@ -695,7 +695,7 @@ class CTCTCF7 {
 	 */
 	public function save_form_settings( $args ) {
 		$cf_id = method_exists( $args, 'id' ) ? $args->id() : $args->id;
-		if ( $_POST['wpcf7-ctct']['accept'] == "" && strpos($_POST['wpcf7-ctct']['wpcf7-form'], " type:single ") !== false ) { 
+		if ( $_POST['wpcf7-ctct']['accept'] == "" ) { 
 			$_POST['wpcf7-ctct']['accept'] = "ctctcf7_lists"; 
 		}
 		update_option( 'cf7_ctct_' . $cf_id, $_POST['wpcf7-ctct'] );
