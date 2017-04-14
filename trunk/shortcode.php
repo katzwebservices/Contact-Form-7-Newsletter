@@ -15,8 +15,8 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 	}
 
 	function add_shortcode() {
-		if ( function_exists( 'wpcf7_add_shortcode' ) ) {
-			wpcf7_add_shortcode( array( 'ctct', 'ctct*' ), array( $this, 'shortcode_handler' ), true );
+		if ( function_exists( 'wpcf7_add_form_tag' ) ) {
+			wpcf7_add_form_tag( array( 'ctct', 'ctct*' ), array( $this, 'shortcode_handler' ), true );
 		}
 	}
 
@@ -36,12 +36,12 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 
 		// Again, attempt to fix
 		// https://github.com/katzwebservices/Contact-Form-7-Newsletter/issues/24
-		if ( ! class_exists( 'WPCF7_ShortcodeManager' ) ) {
+		if ( ! class_exists( 'WPCF7_FormTagsManager' ) ) {
 			include_once WPCF7_PLUGIN_DIR . '/includes/shortcodes.php';
 		}
 
 		// They must be using version CF7 3.0 or less
-		if ( ! class_exists( 'WPCF7_ShortcodeManager' ) ) {
+		if ( ! class_exists( 'WPCF7_FormTagsManager' ) ) {
 			return;
 		}
 
@@ -53,7 +53,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		$code = stripslashes_deep( @$_REQUEST['data'] );
 
 		// Get the tags from the form code
-		$scanned_form_tags = WPCF7_ShortcodeManager::get_instance()->scan_shortcode( $code );
+		$scanned_form_tags = WPCF7_FormTagsManager::get_instance()->scan_shortcode( $code );
 
 		if ( count( $scanned_form_tags ) ) {
 			foreach ( $scanned_form_tags as $fe ) {
@@ -141,7 +141,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 
 	function shortcode_handler( $tag ) {
 
-		$tag = new WPCF7_Shortcode( $tag );
+		$tag = new WPCF7_FormTag( $tag );
 
 		if ( empty( $tag->name ) ) {
 			return '';
@@ -158,7 +158,7 @@ class CTCTCF7_Shortcode extends CTCTCF7 {
 		/**
 		 * Get the list type
 		 *
-		 * @uses WPCF7_Shortcode::get_option()
+		 * @uses WPCF7_FormTag::get_option()
 		 */
 		$options['type']      = $tag->get_option( 'type', 'id', true );
 		$options['label']     = urldecode( $tag->get_option( 'label', '', true ) );
